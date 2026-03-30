@@ -85,7 +85,7 @@ void good()
 
 using namespace CWE122_Heap_Based_Buffer_Overflow__c_CWE805_int_memcpy_72; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

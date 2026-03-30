@@ -92,7 +92,7 @@ void good()
 
 using namespace CWE121_Stack_Based_Buffer_Overflow__CWE806_wchar_t_declare_snprintf_33; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

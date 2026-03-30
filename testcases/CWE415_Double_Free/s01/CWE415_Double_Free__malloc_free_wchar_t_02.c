@@ -151,7 +151,7 @@ void CWE415_Double_Free__malloc_free_wchar_t_02_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

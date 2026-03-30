@@ -144,7 +144,7 @@ void good()
 
 using namespace CWE124_Buffer_Underwrite__new_char_cpy_15; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

@@ -147,7 +147,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_45_good()
    application, which is how source code analysis tools are tested. */
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

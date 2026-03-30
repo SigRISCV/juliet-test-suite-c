@@ -159,7 +159,7 @@ void good()
 
 using namespace CWE415_Double_Free__new_delete_array_class_05; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

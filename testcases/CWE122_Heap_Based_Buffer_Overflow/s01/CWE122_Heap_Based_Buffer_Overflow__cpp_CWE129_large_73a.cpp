@@ -102,7 +102,7 @@ void good()
 
 using namespace CWE122_Heap_Based_Buffer_Overflow__cpp_CWE129_large_73; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

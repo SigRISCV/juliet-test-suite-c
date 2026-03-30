@@ -65,7 +65,7 @@ void CWE562_Return_of_Stack_Variable_Address__return_pointer_buf_01_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[]) 
+int main(int argc, char * __raw argv[]) 
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

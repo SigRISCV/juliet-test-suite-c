@@ -91,7 +91,7 @@ void good()
 
 using namespace CWE590_Free_Memory_Not_on_Heap__free_int64_t_alloca_81; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

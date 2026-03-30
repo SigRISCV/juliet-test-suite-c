@@ -141,7 +141,7 @@ void good()
 
 using namespace CWE590_Free_Memory_Not_on_Heap__delete_array_class_alloca_15; /* so that we can use good and bad easily */
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

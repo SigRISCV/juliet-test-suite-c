@@ -191,7 +191,7 @@ void CWE416_Use_After_Free__malloc_free_int_03_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );
