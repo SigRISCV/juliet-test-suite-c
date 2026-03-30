@@ -40,7 +40,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_22_bad()
     {
         /* Read input from a file */
         size_t dataLen = strlen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {
@@ -82,7 +82,7 @@ static void goodB2G1()
     {
         /* Read input from a file */
         size_t dataLen = strlen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {
@@ -116,7 +116,7 @@ static void goodB2G2()
     {
         /* Read input from a file */
         size_t dataLen = strlen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {
@@ -153,7 +153,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_22_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );
