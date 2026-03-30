@@ -45,7 +45,7 @@ void CWE122_Heap_Based_Buffer_Overflow__wchar_t_type_overrun_memcpy_14_bad()
             structCharVoid->charFirst[(sizeof(structCharVoid->charFirst)/sizeof(wchar_t))-1] = L'\0'; /* null terminate the string */
             printWLine((wchar_t *)structCharVoid->charFirst);
             printWLine((wchar_t *)structCharVoid->voidSecond);
-            free(structCharVoid);
+            free((__raw void *)structCharVoid);
         }
     }
 }
@@ -75,7 +75,7 @@ static void good1()
             structCharVoid->charFirst[(sizeof(structCharVoid->charFirst)/sizeof(wchar_t))-1] = L'\0'; /* null terminate the string */
             printWLine((wchar_t *)structCharVoid->charFirst);
             printWLine((wchar_t *)structCharVoid->voidSecond);
-            free(structCharVoid);
+            free((__raw void *)structCharVoid);
         }
     }
 }
@@ -96,7 +96,7 @@ static void good2()
             structCharVoid->charFirst[(sizeof(structCharVoid->charFirst)/sizeof(wchar_t))-1] = L'\0'; /* null terminate the string */
             printWLine((wchar_t *)structCharVoid->charFirst);
             printWLine((wchar_t *)structCharVoid->voidSecond);
-            free(structCharVoid);
+            free((__raw void *)structCharVoid);
         }
     }
 }
@@ -116,7 +116,7 @@ void CWE122_Heap_Based_Buffer_Overflow__wchar_t_type_overrun_memcpy_14_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );
