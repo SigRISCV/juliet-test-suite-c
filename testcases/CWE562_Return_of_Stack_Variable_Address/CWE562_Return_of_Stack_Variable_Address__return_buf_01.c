@@ -14,7 +14,10 @@ static char *helperBad()
     char charString[] = "helperBad string";
 
     /* FLAW: returning stack-allocated buffer */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
     return charString; /* this may generate a warning -- it's on purpose */
+#pragma clang diagnostic pop
 }
 
 void CWE562_Return_of_Stack_Variable_Address__return_buf_01_bad() 
@@ -59,7 +62,7 @@ void CWE562_Return_of_Stack_Variable_Address__return_buf_01_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[]) 
+int main(int argc, char * __raw argv[]) 
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );
