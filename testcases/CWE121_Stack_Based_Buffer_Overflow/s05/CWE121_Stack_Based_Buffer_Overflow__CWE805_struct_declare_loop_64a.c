@@ -29,7 +29,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64_bad()
     /* FLAW: Set a pointer to a "small" buffer. This buffer will be used in the sinks as a destination
      * buffer in various memory copying functions using a "large" source buffer. */
     data = dataBadBuffer;
-    CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64b_badSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -46,7 +46,7 @@ static void goodG2B()
     twoIntsStruct dataGoodBuffer[100];
     /* FIX: Set a pointer to a "large" buffer, thus avoiding buffer overflows in the sinks. */
     data = dataGoodBuffer;
-    CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64b_goodG2BSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64b_goodG2BSink((void *)&data);
 }
 
 void CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64_good()
@@ -64,7 +64,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE805_struct_declare_loop_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

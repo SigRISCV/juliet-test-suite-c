@@ -31,7 +31,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64_bad()
     /* FLAW: Initialize data as a large buffer that is larger than the small buffer used in the sink */
     memset(data, 'A', 100-1); /* fill with 'A's */
     data[100-1] = '\0'; /* null terminate */
-    CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64b_badSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -49,7 +49,7 @@ static void goodG2B()
     /* FIX: Initialize data as a small buffer that as small or smaller than the small buffer used in the sink */
     memset(data, 'A', 50-1); /* fill with 'A's */
     data[50-1] = '\0'; /* null terminate */
-    CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64b_goodG2BSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64b_goodG2BSink((void *)&data);
 }
 
 void CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64_good()
@@ -67,7 +67,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE806_char_declare_loop_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

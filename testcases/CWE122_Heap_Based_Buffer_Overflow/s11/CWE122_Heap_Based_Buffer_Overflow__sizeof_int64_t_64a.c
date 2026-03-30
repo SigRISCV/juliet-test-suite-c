@@ -31,7 +31,7 @@ void CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64_bad()
     data = (int64_t *)malloc(sizeof(data));
     if (data == NULL) {exit(-1);}
     *data = 2147483643LL;
-    CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64b_badSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -50,7 +50,7 @@ static void goodG2B()
     data = (int64_t *)malloc(sizeof(*data));
     if (data == NULL) {exit(-1);}
     *data = 2147483643LL;
-    CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64b_goodG2BSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64b_goodG2BSink((void *)&data);
 }
 
 void CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64_good()
@@ -68,7 +68,7 @@ void CWE122_Heap_Based_Buffer_Overflow__sizeof_int64_t_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

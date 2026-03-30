@@ -56,7 +56,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64_bad()
             }
         }
     }
-    CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64b_badSink(&data);
+    CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -97,7 +97,7 @@ static void goodB2G()
             }
         }
     }
-    CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64b_goodB2GSink(&data);
+    CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64b_goodB2GSink((void *)&data);
 }
 
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64_good()
@@ -114,7 +114,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

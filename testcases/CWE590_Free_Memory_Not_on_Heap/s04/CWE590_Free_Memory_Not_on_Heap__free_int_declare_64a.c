@@ -39,7 +39,7 @@ void CWE590_Free_Memory_Not_on_Heap__free_int_declare_64_bad()
         }
         data = dataBuffer;
     }
-    CWE590_Free_Memory_Not_on_Heap__free_int_declare_64b_badSink(&data);
+    CWE590_Free_Memory_Not_on_Heap__free_int_declare_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -70,7 +70,7 @@ static void goodG2B()
         }
         data = dataBuffer;
     }
-    CWE590_Free_Memory_Not_on_Heap__free_int_declare_64b_goodG2BSink(&data);
+    CWE590_Free_Memory_Not_on_Heap__free_int_declare_64b_goodG2BSink((void *)&data);
 }
 
 void CWE590_Free_Memory_Not_on_Heap__free_int_declare_64_good()
@@ -88,7 +88,7 @@ void CWE590_Free_Memory_Not_on_Heap__free_int_declare_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

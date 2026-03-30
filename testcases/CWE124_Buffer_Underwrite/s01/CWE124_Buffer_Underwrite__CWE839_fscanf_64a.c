@@ -29,7 +29,7 @@ void CWE124_Buffer_Underwrite__CWE839_fscanf_64_bad()
     data = -1;
     /* POTENTIAL FLAW: Read data from the console using fscanf() */
     fscanf(stdin, "%d", &data);
-    CWE124_Buffer_Underwrite__CWE839_fscanf_64b_badSink(&data);
+    CWE124_Buffer_Underwrite__CWE839_fscanf_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -47,7 +47,7 @@ static void goodG2B()
     /* FIX: Use a value greater than 0, but less than 10 to avoid attempting to
     * access an index of the array in the sink that is out-of-bounds */
     data = 7;
-    CWE124_Buffer_Underwrite__CWE839_fscanf_64b_goodG2BSink(&data);
+    CWE124_Buffer_Underwrite__CWE839_fscanf_64b_goodG2BSink((void *)&data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
@@ -60,7 +60,7 @@ static void goodB2G()
     data = -1;
     /* POTENTIAL FLAW: Read data from the console using fscanf() */
     fscanf(stdin, "%d", &data);
-    CWE124_Buffer_Underwrite__CWE839_fscanf_64b_goodB2GSink(&data);
+    CWE124_Buffer_Underwrite__CWE839_fscanf_64b_goodB2GSink((void *)&data);
 }
 
 void CWE124_Buffer_Underwrite__CWE839_fscanf_64_good()
@@ -78,7 +78,7 @@ void CWE124_Buffer_Underwrite__CWE839_fscanf_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

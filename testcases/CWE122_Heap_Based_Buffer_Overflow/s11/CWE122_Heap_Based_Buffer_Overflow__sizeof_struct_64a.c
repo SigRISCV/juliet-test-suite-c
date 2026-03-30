@@ -32,7 +32,7 @@ void CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64_bad()
     if (data == NULL) {exit(-1);}
     data->intOne = 1;
     data->intTwo = 2;
-    CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64b_badSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -52,7 +52,7 @@ static void goodG2B()
     if (data == NULL) {exit(-1);}
     data->intOne = 1;
     data->intTwo = 2;
-    CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64b_goodG2BSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64b_goodG2BSink((void *)&data);
 }
 
 void CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64_good()
@@ -70,7 +70,7 @@ void CWE122_Heap_Based_Buffer_Overflow__sizeof_struct_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

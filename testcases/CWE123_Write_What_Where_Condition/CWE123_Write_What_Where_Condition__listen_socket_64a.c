@@ -128,7 +128,7 @@ void CWE123_Write_What_Where_Condition__listen_socket_64_bad()
         }
 #endif
     }
-    CWE123_Write_What_Where_Condition__listen_socket_64b_badSink(&data);
+    CWE123_Write_What_Where_Condition__listen_socket_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -149,7 +149,7 @@ static void goodG2B()
     head.prev = &data.list;
     /* FIX: don't overwrite linked list pointers */
     ; /* empty statement needed by some flow variants */
-    CWE123_Write_What_Where_Condition__listen_socket_64b_goodG2BSink(&data);
+    CWE123_Write_What_Where_Condition__listen_socket_64b_goodG2BSink((void *)&data);
 }
 
 void CWE123_Write_What_Where_Condition__listen_socket_64_good()
@@ -167,7 +167,7 @@ void CWE123_Write_What_Where_Condition__listen_socket_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

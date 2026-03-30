@@ -33,7 +33,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE135_64_bad()
     data = NULL;
     /* POTENTIAL FLAW: Set data to point to a wide string */
     data = (void *)WIDE_STRING;
-    CWE121_Stack_Based_Buffer_Overflow__CWE135_64b_badSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE135_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -49,7 +49,7 @@ static void goodG2B()
     data = NULL;
     /* FIX: Set data to point to a char string */
     data = (void *)CHAR_STRING;
-    CWE121_Stack_Based_Buffer_Overflow__CWE135_64b_goodG2BSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE135_64b_goodG2BSink((void *)&data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
@@ -61,7 +61,7 @@ static void goodB2G()
     data = NULL;
     /* POTENTIAL FLAW: Set data to point to a wide string */
     data = (void *)WIDE_STRING;
-    CWE121_Stack_Based_Buffer_Overflow__CWE135_64b_goodB2GSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE135_64b_goodB2GSink((void *)&data);
 }
 
 void CWE121_Stack_Based_Buffer_Overflow__CWE135_64_good()
@@ -79,7 +79,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE135_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

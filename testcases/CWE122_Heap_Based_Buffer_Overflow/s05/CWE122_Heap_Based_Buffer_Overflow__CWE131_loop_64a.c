@@ -28,7 +28,7 @@ void CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64_bad()
     /* FLAW: Allocate memory without using sizeof(int) */
     data = (int *)malloc(10);
     if (data == NULL) {exit(-1);}
-    CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64b_badSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -45,7 +45,7 @@ static void goodG2B()
     /* FIX: Allocate memory using sizeof(int) */
     data = (int *)malloc(10*sizeof(int));
     if (data == NULL) {exit(-1);}
-    CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64b_goodG2BSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64b_goodG2BSink((void *)&data);
 }
 
 void CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64_good()
@@ -63,7 +63,7 @@ void CWE122_Heap_Based_Buffer_Overflow__CWE131_loop_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

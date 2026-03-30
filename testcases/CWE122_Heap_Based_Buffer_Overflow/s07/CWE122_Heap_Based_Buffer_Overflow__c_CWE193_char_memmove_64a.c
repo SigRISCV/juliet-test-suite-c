@@ -35,7 +35,7 @@ void CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64_bad()
     /* FLAW: Did not leave space for a null terminator */
     data = (char *)malloc(10*sizeof(char));
     if (data == NULL) {exit(-1);}
-    CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64b_badSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -52,7 +52,7 @@ static void goodG2B()
     /* FIX: Allocate space for a null terminator */
     data = (char *)malloc((10+1)*sizeof(char));
     if (data == NULL) {exit(-1);}
-    CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64b_goodG2BSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64b_goodG2BSink((void *)&data);
 }
 
 void CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64_good()
@@ -70,7 +70,7 @@ void CWE122_Heap_Based_Buffer_Overflow__c_CWE193_char_memmove_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

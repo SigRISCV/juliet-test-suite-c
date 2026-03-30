@@ -35,7 +35,7 @@ void CWE124_Buffer_Underwrite__malloc_char_loop_64_bad()
         /* FLAW: Set data pointer to before the allocated memory buffer */
         data = dataBuffer - 8;
     }
-    CWE124_Buffer_Underwrite__malloc_char_loop_64b_badSink(&data);
+    CWE124_Buffer_Underwrite__malloc_char_loop_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -57,7 +57,7 @@ static void goodG2B()
         /* FIX: Set data pointer to the allocated memory buffer */
         data = dataBuffer;
     }
-    CWE124_Buffer_Underwrite__malloc_char_loop_64b_goodG2BSink(&data);
+    CWE124_Buffer_Underwrite__malloc_char_loop_64b_goodG2BSink((void *)&data);
 }
 
 void CWE124_Buffer_Underwrite__malloc_char_loop_64_good()
@@ -75,7 +75,7 @@ void CWE124_Buffer_Underwrite__malloc_char_loop_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

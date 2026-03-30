@@ -118,7 +118,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64_bad()
         }
 #endif
     }
-    CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64b_badSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -136,7 +136,7 @@ static void goodG2B()
     /* FIX: Use a value greater than 0, but less than 10 to avoid attempting to
      * access an index of the array in the sink that is out-of-bounds */
     data = 7;
-    CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64b_goodG2BSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64b_goodG2BSink((void *)&data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
@@ -216,7 +216,7 @@ static void goodB2G()
         }
 #endif
     }
-    CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64b_goodB2GSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64b_goodB2GSink((void *)&data);
 }
 
 void CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64_good()
@@ -234,7 +234,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE129_listen_socket_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

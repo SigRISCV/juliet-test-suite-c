@@ -29,7 +29,7 @@ void CWE476_NULL_Pointer_Dereference__long_64_bad()
     long * data;
     /* POTENTIAL FLAW: Set data to NULL */
     data = NULL;
-    CWE476_NULL_Pointer_Dereference__long_64b_badSink(&data);
+    CWE476_NULL_Pointer_Dereference__long_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -47,7 +47,7 @@ static void goodG2B()
     {
         data = &tmpData;
     }
-    CWE476_NULL_Pointer_Dereference__long_64b_goodG2BSink(&data);
+    CWE476_NULL_Pointer_Dereference__long_64b_goodG2BSink((void *)&data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
@@ -58,7 +58,7 @@ static void goodB2G()
     long * data;
     /* POTENTIAL FLAW: Set data to NULL */
     data = NULL;
-    CWE476_NULL_Pointer_Dereference__long_64b_goodB2GSink(&data);
+    CWE476_NULL_Pointer_Dereference__long_64b_goodB2GSink((void *)&data);
 }
 
 void CWE476_NULL_Pointer_Dereference__long_64_good()
@@ -76,7 +76,7 @@ void CWE476_NULL_Pointer_Dereference__long_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

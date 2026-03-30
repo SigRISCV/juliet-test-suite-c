@@ -37,7 +37,7 @@ void CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64_bad()
     data = (char *)malloc(50*sizeof(char));
     if (data == NULL) {exit(-1);}
     data[0] = '\0'; /* null terminate */
-    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64b_badSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -55,7 +55,7 @@ static void goodG2B()
     data = (char *)malloc(100*sizeof(char));
     if (data == NULL) {exit(-1);}
     data[0] = '\0'; /* null terminate */
-    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64b_goodG2BSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64b_goodG2BSink((void *)&data);
 }
 
 void CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64_good()
@@ -73,7 +73,7 @@ void CWE122_Heap_Based_Buffer_Overflow__c_CWE805_char_snprintf_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

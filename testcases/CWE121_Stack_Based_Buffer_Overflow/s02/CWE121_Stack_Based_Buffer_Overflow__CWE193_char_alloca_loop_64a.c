@@ -37,7 +37,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64_bad()
      * string copies in the sinks  */
     data = dataBadBuffer;
     data[0] = '\0'; /* null terminate */
-    CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64b_badSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -56,7 +56,7 @@ static void goodG2B()
      * string copies in the sinks  */
     data = dataGoodBuffer;
     data[0] = '\0'; /* null terminate */
-    CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64b_goodG2BSink(&data);
+    CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64b_goodG2BSink((void *)&data);
 }
 
 void CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64_good()
@@ -74,7 +74,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE193_char_alloca_loop_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

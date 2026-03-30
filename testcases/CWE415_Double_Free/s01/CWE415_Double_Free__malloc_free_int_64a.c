@@ -33,7 +33,7 @@ void CWE415_Double_Free__malloc_free_int_64_bad()
     if (data == NULL) {exit(-1);}
     /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
     free(data);
-    CWE415_Double_Free__malloc_free_int_64b_badSink(&data);
+    CWE415_Double_Free__malloc_free_int_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -51,7 +51,7 @@ static void goodG2B()
     data = (int *)malloc(100*sizeof(int));
     if (data == NULL) {exit(-1);}
     /* FIX: Do NOT free data in the source - the bad sink frees data */
-    CWE415_Double_Free__malloc_free_int_64b_goodG2BSink(&data);
+    CWE415_Double_Free__malloc_free_int_64b_goodG2BSink((void *)&data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
@@ -66,7 +66,7 @@ static void goodB2G()
     if (data == NULL) {exit(-1);}
     /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
     free(data);
-    CWE415_Double_Free__malloc_free_int_64b_goodB2GSink(&data);
+    CWE415_Double_Free__malloc_free_int_64b_goodB2GSink((void *)&data);
 }
 
 void CWE415_Double_Free__malloc_free_int_64_good()
@@ -84,7 +84,7 @@ void CWE415_Double_Free__malloc_free_int_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

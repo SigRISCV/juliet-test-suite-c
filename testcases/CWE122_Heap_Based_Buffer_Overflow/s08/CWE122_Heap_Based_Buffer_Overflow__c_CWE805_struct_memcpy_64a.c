@@ -28,7 +28,7 @@ void CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64_bad()
     /* FLAW: Allocate and point data to a small buffer that is smaller than the large buffer used in the sinks */
     data = (twoIntsStruct *)malloc(50*sizeof(twoIntsStruct));
     if (data == NULL) {exit(-1);}
-    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64b_badSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64b_badSink((void *)&data);
 }
 
 #endif /* OMITBAD */
@@ -45,7 +45,7 @@ static void goodG2B()
     /* FIX: Allocate and point data to a large buffer that is at least as large as the large buffer used in the sink */
     data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
     if (data == NULL) {exit(-1);}
-    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64b_goodG2BSink(&data);
+    CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64b_goodG2BSink((void *)&data);
 }
 
 void CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64_good()
@@ -63,7 +63,7 @@ void CWE122_Heap_Based_Buffer_Overflow__c_CWE805_struct_memcpy_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );
