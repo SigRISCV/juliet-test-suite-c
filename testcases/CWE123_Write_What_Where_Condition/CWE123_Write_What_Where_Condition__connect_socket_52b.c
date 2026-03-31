@@ -59,9 +59,6 @@ void CWE123_Write_What_Where_Condition__connect_socket_52c_badSink(badStruct dat
 
 void CWE123_Write_What_Where_Condition__connect_socket_52b_badSink(badStruct data)
 {
-    /* SigRISCV type hints: help TypeRecovery identify pointer fields */
-    linkedList *_sigriscv_hint_next = data.list.next; (void)_sigriscv_hint_next;
-    linkedList *_sigriscv_hint_prev = data.list.prev; (void)_sigriscv_hint_prev;
     CWE123_Write_What_Where_Condition__connect_socket_52c_badSink(data);
 }
 
@@ -75,9 +72,6 @@ void CWE123_Write_What_Where_Condition__connect_socket_52c_goodG2BSink(badStruct
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE123_Write_What_Where_Condition__connect_socket_52b_goodG2BSink(badStruct data)
 {
-    /* SigRISCV type hints: help TypeRecovery identify pointer fields */
-    linkedList *_sigriscv_hint_next = data.list.next; (void)_sigriscv_hint_next;
-    linkedList *_sigriscv_hint_prev = data.list.prev; (void)_sigriscv_hint_prev;
     CWE123_Write_What_Where_Condition__connect_socket_52c_goodG2BSink(data);
 }
 
