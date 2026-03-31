@@ -97,7 +97,7 @@ void CWE590_Free_Memory_Not_on_Heap__free_int64_t_declare_41_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

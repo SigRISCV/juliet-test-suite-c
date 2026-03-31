@@ -376,7 +376,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_listen_socket_03_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

@@ -102,7 +102,7 @@ void CWE415_Double_Free__malloc_free_long_17_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

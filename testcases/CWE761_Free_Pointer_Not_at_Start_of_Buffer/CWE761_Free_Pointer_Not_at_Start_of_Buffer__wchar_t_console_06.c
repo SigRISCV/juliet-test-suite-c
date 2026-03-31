@@ -198,7 +198,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_06_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

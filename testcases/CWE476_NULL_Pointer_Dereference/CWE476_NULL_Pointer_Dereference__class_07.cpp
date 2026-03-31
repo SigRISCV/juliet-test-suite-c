@@ -173,7 +173,7 @@ void good()
 
 using namespace CWE476_NULL_Pointer_Dereference__class_07; /* so that we can use good and bad easily */
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

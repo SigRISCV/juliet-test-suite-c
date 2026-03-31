@@ -168,7 +168,7 @@ void CWE123_Write_What_Where_Condition__listen_socket_52_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

@@ -146,7 +146,7 @@ void good()
 
 using namespace CWE123_Write_What_Where_Condition__connect_socket_81; /* so that we can use good and bad easily */
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

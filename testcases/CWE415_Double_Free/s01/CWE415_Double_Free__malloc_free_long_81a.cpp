@@ -86,7 +86,7 @@ void good()
 
 using namespace CWE415_Double_Free__malloc_free_long_81; /* so that we can use good and bad easily */
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

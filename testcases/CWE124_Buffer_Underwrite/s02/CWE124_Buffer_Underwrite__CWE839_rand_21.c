@@ -202,7 +202,7 @@ void CWE124_Buffer_Underwrite__CWE839_rand_21_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

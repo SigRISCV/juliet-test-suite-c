@@ -80,7 +80,7 @@ void good()
 
 using namespace CWE124_Buffer_Underwrite__new_wchar_t_cpy_51; /* so that we can use good and bad easily */
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

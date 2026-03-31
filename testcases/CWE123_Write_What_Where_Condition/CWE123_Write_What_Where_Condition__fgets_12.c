@@ -134,7 +134,7 @@ void CWE123_Write_What_Where_Condition__fgets_12_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

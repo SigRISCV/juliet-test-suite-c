@@ -199,7 +199,7 @@ void CWE123_Write_What_Where_Condition__connect_socket_45_good()
  */
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

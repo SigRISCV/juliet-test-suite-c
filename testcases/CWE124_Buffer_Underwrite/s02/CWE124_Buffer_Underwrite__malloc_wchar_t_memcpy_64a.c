@@ -75,7 +75,7 @@ void CWE124_Buffer_Underwrite__malloc_wchar_t_memcpy_64_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

@@ -119,7 +119,7 @@ void CWE416_Use_After_Free__return_freed_ptr_16_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

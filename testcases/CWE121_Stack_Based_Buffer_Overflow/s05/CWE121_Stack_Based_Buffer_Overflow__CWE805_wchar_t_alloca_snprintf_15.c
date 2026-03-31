@@ -130,7 +130,7 @@ void CWE121_Stack_Based_Buffer_Overflow__CWE805_wchar_t_alloca_snprintf_15_good(
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * __raw argv[])
+int main(int argc, char * argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );
