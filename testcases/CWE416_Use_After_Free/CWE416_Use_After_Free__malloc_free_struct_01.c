@@ -23,24 +23,32 @@ Template File: sources-sinks-01.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_struct_01_bad()
 {
-    twoIntsStruct * data;
-    /* Initialize data */
-    data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
+    twoIntsStruct **p1;
+    twoIntsStruct **p3;
+    twoIntsStruct *p2;
+    p1 = NULL;
+    p3 = NULL;
+    p2 = NULL;
+    p1 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+    if (p2 == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i].intOne = 1;
-            data[i].intTwo = 2;
+            p2[i].intOne = 1;
+            p2[i].intTwo = 2;
         }
     }
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)p1);
+    p3 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = p2;
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printStructLine(&data[0]);
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
+    printStructLine(&(*p1)[0]);
+    free((__raw void *)p3);
+    free(p2);
 }
 
 #endif /* OMITBAD */
@@ -50,47 +58,57 @@ void CWE416_Use_After_Free__malloc_free_struct_01_bad()
 /* goodG2B uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    twoIntsStruct * data;
-    /* Initialize data */
-    data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
+    twoIntsStruct **p1;
+    twoIntsStruct *p2;
+    p1 = NULL;
+    p2 = NULL;
+    p1 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+    if (p2 == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i].intOne = 1;
-            data[i].intTwo = 2;
+            p2[i].intOne = 1;
+            p2[i].intTwo = 2;
         }
     }
+    *p1 = p2;
     /* FIX: Do not free data in the source */
-    /* POTENTIAL FLAW: Use of data that may have been freed */
-    printStructLine(&data[0]);
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
+    printStructLine(&(*p1)[0]);
+    free((__raw void *)p1);
+    free(p2);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    twoIntsStruct * data;
-    /* Initialize data */
-    data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
+    twoIntsStruct **p1;
+    twoIntsStruct **p3;
+    twoIntsStruct *p2;
+    p1 = NULL;
+    p3 = NULL;
+    p2 = NULL;
+    p1 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+    if (p2 == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i].intOne = 1;
-            data[i].intTwo = 2;
+            p2[i].intOne = 1;
+            p2[i].intTwo = 2;
         }
     }
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)p1);
+    p3 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = p2;
     /* FIX: Don't use data that may have been freed already */
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
-    /* do nothing */
-    ; /* empty statement needed for some flow variants */
+    free((__raw void *)p3);
+    free(p2);
 }
 
 void CWE416_Use_After_Free__malloc_free_struct_01_good()
@@ -108,7 +126,7 @@ void CWE416_Use_After_Free__malloc_free_struct_01_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

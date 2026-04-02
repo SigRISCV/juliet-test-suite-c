@@ -15,55 +15,6 @@ Template File: point-flaw-08.tmpl.c
 
 #include "std_testcase.h"
 
-static char * helperBad(char * aString)
-{
-    size_t i = 0;
-    size_t j;
-    char * reversedString = NULL;
-    if (aString != NULL)
-    {
-        i = strlen(aString);
-        reversedString = (char *) malloc(i+1);
-        if (reversedString == NULL) {exit(-1);}
-        for (j = 0; j < i; j++)
-        {
-            reversedString[j] = aString[i-j-1];
-        }
-        reversedString[i] = '\0';
-        /* FLAW: Freeing a memory block and then returning a pointer to the freed memory */
-        free(reversedString);
-        return reversedString;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-static char * helperGood(char * aString)
-{
-    size_t i = 0;
-    size_t j;
-    char * reversedString = NULL;
-    if (aString != NULL)
-    {
-        i = strlen(aString);
-        reversedString = (char *) malloc(i+1);
-        if (reversedString == NULL) {exit(-1);}
-        for (j = 0; j < i; j++)
-        {
-            reversedString[j] = aString[i-j-1];
-        }
-        reversedString[i] = '\0';
-        /* FIX: Do not free the memory before returning */
-        return reversedString;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
 /* The two function below always return the same value, so a tool
    should be able to identify that calls to the functions will always
    return a fixed value. */
@@ -77,6 +28,66 @@ static int staticReturnsFalse()
     return 0;
 }
 
+static char ** helperBad(char * aString)
+{
+    size_t i = 0;
+    size_t j;
+    char **p1 = NULL;
+    char **p3 = NULL;
+    char * reversedString = NULL;
+    if (aString != NULL)
+    {
+        i = strlen(aString);
+        p1 = (char **)malloc(sizeof(char *));
+        if (p1 == NULL) {exit(-1);}
+        reversedString = (char *) malloc(i+1);
+        if (reversedString == NULL) {exit(-1);}
+        for (j = 0; j < i; j++)
+        {
+            reversedString[j] = aString[i-j-1];
+        }
+        reversedString[i] = '\0';
+        /* FLAW: Freeing the slot and returning a stale pointer to it */
+        free((__raw void *)p1);
+        p3 = (char **)malloc(sizeof(char *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = reversedString;
+        return p1;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+static char ** helperGood(char * aString)
+{
+    size_t i = 0;
+    size_t j;
+    char **p1 = NULL;
+    char * reversedString = NULL;
+    if (aString != NULL)
+    {
+        i = strlen(aString);
+        p1 = (char **)malloc(sizeof(char *));
+        if (p1 == NULL) {exit(-1);}
+        reversedString = (char *) malloc(i+1);
+        if (reversedString == NULL) {exit(-1);}
+        for (j = 0; j < i; j++)
+        {
+            reversedString[j] = aString[i-j-1];
+        }
+        reversedString[i] = '\0';
+        /* FIX: Return a live slot containing the protected pointer */
+        *p1 = reversedString;
+        return p1;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
 #ifndef OMITBAD
 
 void CWE416_Use_After_Free__return_freed_ptr_08_bad()
@@ -85,8 +96,8 @@ void CWE416_Use_After_Free__return_freed_ptr_08_bad()
     {
         {
             /* Call the bad helper function */
-            char * reversedString = helperBad("BadSink");
-            printLine(reversedString);
+            char ** reversedStringSlot = helperBad("BadSink");
+            printLine(*reversedStringSlot);
             /* free(reversedString);
              * This call to free() was removed because we want the tool to detect the use after free,
              * but we don't want that function to be free(). Essentially we want to avoid a double free
@@ -111,12 +122,10 @@ static void good1()
     {
         {
             /* Call the good helper function */
-            char * reversedString = helperGood("GoodSink");
-            printLine(reversedString);
-            /* free(reversedString);
-             * This call to free() was removed because we want the tool to detect the use after free,
-             * but we don't want that function to be free(). Essentially we want to avoid a double free
-             */
+            char ** reversedStringSlot = helperGood("GoodSink");
+            printLine(*reversedStringSlot);
+            free(*reversedStringSlot);
+            free((__raw void *)reversedStringSlot);
         }
     }
 }
@@ -128,12 +137,10 @@ static void good2()
     {
         {
             /* Call the good helper function */
-            char * reversedString = helperGood("GoodSink");
-            printLine(reversedString);
-            /* free(reversedString);
-             * This call to free() was removed because we want the tool to detect the use after free,
-             * but we don't want that function to be free(). Essentially we want to avoid a double free
-             */
+            char ** reversedStringSlot = helperGood("GoodSink");
+            printLine(*reversedStringSlot);
+            free(*reversedStringSlot);
+            free((__raw void *)reversedStringSlot);
         }
     }
 }

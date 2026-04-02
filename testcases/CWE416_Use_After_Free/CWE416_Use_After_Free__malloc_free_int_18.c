@@ -23,26 +23,39 @@ Template File: sources-sinks-18.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_int_18_bad()
 {
-    int * data;
+    /* SigRISCV Stage 2: use int** so freed heap block triggers ls QARMA failure */
+    int **pp;
+    int **p3;
+    int *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     goto source;
 source:
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
+    pp = (int **)malloc(sizeof(int *));
+    if (pp == NULL) {exit(-1);}
+    inner = (int *)malloc(100*sizeof(int));
+    if (inner == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5;
+            inner[i] = 5;
         }
     }
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
     /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)pp);
+    p3 = (int **)malloc(sizeof(int *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = inner;
     goto sink;
 sink:
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printIntLine(data[0]);
+    printIntLine((*pp)[0]);
+    free((__raw void *)p3);
+    free(inner);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -53,52 +66,73 @@ sink:
 /* goodB2G() - use badsource and goodsink by reversing the blocks on the second goto statement */
 static void goodB2G()
 {
-    int * data;
+    /* SigRISCV Stage 2: use int** so freed heap block triggers ls QARMA failure */
+    int **pp;
+    int **p3;
+    int *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     goto source;
 source:
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
+    pp = (int **)malloc(sizeof(int *));
+    if (pp == NULL) {exit(-1);}
+    inner = (int *)malloc(100*sizeof(int));
+    if (inner == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5;
+            inner[i] = 5;
         }
     }
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
     /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)pp);
+    p3 = (int **)malloc(sizeof(int *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = inner;
     goto sink;
 sink:
     /* FIX: Don't use data that may have been freed already */
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     /* do nothing */
     ; /* empty statement needed for some flow variants */
+    free((__raw void *)p3);
+    free(inner);
 }
 
 /* goodG2B() - use goodsource and badsink by reversing the blocks on the first goto statement */
 static void goodG2B()
 {
-    int * data;
+    /* SigRISCV Stage 2: use int** so freed heap block triggers ls QARMA failure */
+    int **pp;
+    int *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     goto source;
 source:
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
+    pp = (int **)malloc(sizeof(int *));
+    if (pp == NULL) {exit(-1);}
+    inner = (int *)malloc(100*sizeof(int));
+    if (inner == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5;
+            inner[i] = 5;
         }
     }
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
     /* FIX: Do not free data in the source */
     goto sink;
 sink:
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printIntLine(data[0]);
+    printIntLine((*pp)[0]);
+    free((__raw void *)pp);
+    free(inner);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -117,7 +151,7 @@ void CWE416_Use_After_Free__malloc_free_int_18_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

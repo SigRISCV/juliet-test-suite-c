@@ -23,27 +23,40 @@ Template File: sources-sinks-14.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_int64_t_14_bad()
 {
-    int64_t * data;
+    /* SigRISCV Stage 2: use int64_t** so freed heap block triggers ls QARMA failure */
+    int64_t **pp;
+    int64_t **p3;
+    int64_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     if(globalFive==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
+        pp = (int64_t **)malloc(sizeof(int64_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (int64_t *)malloc(100*sizeof(int64_t));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i] = 5LL;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i] = 5LL;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (int64_t **)malloc(sizeof(int64_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
     }
     if(globalFive==5)
     {
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printLongLongLine(data[0]);
+        printLongLongLine((*pp)[0]);
+        free((__raw void *)p3);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     }
 }
@@ -55,22 +68,33 @@ void CWE416_Use_After_Free__malloc_free_int64_t_14_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second globalFive==5 to globalFive!=5 */
 static void goodB2G1()
 {
-    int64_t * data;
+    /* SigRISCV Stage 2: use int64_t** so freed heap block triggers ls QARMA failure */
+    int64_t **pp;
+    int64_t **p3;
+    int64_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     if(globalFive==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
+        pp = (int64_t **)malloc(sizeof(int64_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (int64_t *)malloc(100*sizeof(int64_t));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i] = 5LL;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i] = 5LL;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (int64_t **)malloc(sizeof(int64_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
     }
     if(globalFive!=5)
     {
@@ -83,28 +107,41 @@ static void goodB2G1()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
     }
 }
 
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second if */
 static void goodB2G2()
 {
-    int64_t * data;
+    /* SigRISCV Stage 2: use int64_t** so freed heap block triggers ls QARMA failure */
+    int64_t **pp;
+    int64_t **p3;
+    int64_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     if(globalFive==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
+        pp = (int64_t **)malloc(sizeof(int64_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (int64_t *)malloc(100*sizeof(int64_t));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i] = 5LL;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i] = 5LL;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (int64_t **)malloc(sizeof(int64_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
     }
     if(globalFive==5)
     {
@@ -112,15 +149,20 @@ static void goodB2G2()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
     }
 }
 
 /* goodG2B1() - use goodsource and badsink by changing the first globalFive==5 to globalFive!=5 */
 static void goodG2B1()
 {
-    int64_t * data;
+    /* SigRISCV Stage 2: use int64_t** so freed heap block triggers ls QARMA failure */
+    int64_t **pp;
+    int64_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     if(globalFive!=5)
     {
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -128,21 +170,26 @@ static void goodG2B1()
     }
     else
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
+        pp = (int64_t **)malloc(sizeof(int64_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (int64_t *)malloc(100*sizeof(int64_t));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i] = 5LL;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i] = 5LL;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
     }
     if(globalFive==5)
     {
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printLongLongLine(data[0]);
+        printLongLongLine((*pp)[0]);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     }
 }
@@ -150,26 +197,34 @@ static void goodG2B1()
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first if */
 static void goodG2B2()
 {
-    int64_t * data;
+    /* SigRISCV Stage 2: use int64_t** so freed heap block triggers ls QARMA failure */
+    int64_t **pp;
+    int64_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     if(globalFive==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
+        pp = (int64_t **)malloc(sizeof(int64_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (int64_t *)malloc(100*sizeof(int64_t));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i] = 5LL;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i] = 5LL;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
     }
     if(globalFive==5)
     {
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printLongLongLine(data[0]);
+        printLongLongLine((*pp)[0]);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     }
 }
@@ -191,7 +246,7 @@ void CWE416_Use_After_Free__malloc_free_int64_t_14_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

@@ -23,23 +23,31 @@ Template File: sources-sinks-01.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_int64_t_01_bad()
 {
-    int64_t * data;
-    /* Initialize data */
-    data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
+    int64_t **p1;
+    int64_t **p3;
+    int64_t *p2;
+    p1 = NULL;
+    p3 = NULL;
+    p2 = NULL;
+    p1 = (int64_t **)malloc(sizeof(int64_t *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (int64_t *)malloc(100*sizeof(int64_t));
+    if (p2 == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5LL;
+            p2[i] = 5LL;
         }
     }
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)p1);
+    p3 = (int64_t **)malloc(sizeof(int64_t *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = p2;
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLongLine(data[0]);
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
+    printLongLongLine((*p1)[0]);
+    free((__raw void *)p3);
+    free(p2);
 }
 
 #endif /* OMITBAD */
@@ -49,45 +57,55 @@ void CWE416_Use_After_Free__malloc_free_int64_t_01_bad()
 /* goodG2B uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    int64_t * data;
-    /* Initialize data */
-    data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
+    int64_t **p1;
+    int64_t *p2;
+    p1 = NULL;
+    p2 = NULL;
+    p1 = (int64_t **)malloc(sizeof(int64_t *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (int64_t *)malloc(100*sizeof(int64_t));
+    if (p2 == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5LL;
+            p2[i] = 5LL;
         }
     }
+    *p1 = p2;
     /* FIX: Do not free data in the source */
-    /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLongLine(data[0]);
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
+    printLongLongLine((*p1)[0]);
+    free((__raw void *)p1);
+    free(p2);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    int64_t * data;
-    /* Initialize data */
-    data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
+    int64_t **p1;
+    int64_t **p3;
+    int64_t *p2;
+    p1 = NULL;
+    p3 = NULL;
+    p2 = NULL;
+    p1 = (int64_t **)malloc(sizeof(int64_t *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (int64_t *)malloc(100*sizeof(int64_t));
+    if (p2 == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5LL;
+            p2[i] = 5LL;
         }
     }
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)p1);
+    p3 = (int64_t **)malloc(sizeof(int64_t *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = p2;
     /* FIX: Don't use data that may have been freed already */
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
-    /* do nothing */
-    ; /* empty statement needed for some flow variants */
+    free((__raw void *)p3);
+    free(p2);
 }
 
 void CWE416_Use_After_Free__malloc_free_int64_t_01_good()
@@ -105,7 +123,7 @@ void CWE416_Use_After_Free__malloc_free_int64_t_01_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

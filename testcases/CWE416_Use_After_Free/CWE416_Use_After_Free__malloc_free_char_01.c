@@ -23,18 +23,26 @@ Template File: sources-sinks-01.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_char_01_bad()
 {
-    char * data;
-    /* Initialize data */
-    data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    memset(data, 'A', 100-1);
-    data[100-1] = '\0';
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    char **p1;
+    char **p3;
+    char *p2;
+    p1 = NULL;
+    p3 = NULL;
+    p2 = NULL;
+    p1 = (char **)malloc(sizeof(char *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (char *)malloc(100*sizeof(char));
+    if (p2 == NULL) {exit(-1);}
+    memset(p2, 'A', 100-1);
+    p2[100-1] = '\0';
+    free((__raw void *)p1);
+    p3 = (char **)malloc(sizeof(char *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = p2;
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLine(data);
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
+    printLine(*p1);
+    free((__raw void *)p3);
+    free(p2);
 }
 
 #endif /* OMITBAD */
@@ -44,35 +52,45 @@ void CWE416_Use_After_Free__malloc_free_char_01_bad()
 /* goodG2B uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    char * data;
-    /* Initialize data */
-    data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    memset(data, 'A', 100-1);
-    data[100-1] = '\0';
+    char **p1;
+    char *p2;
+    p1 = NULL;
+    p2 = NULL;
+    p1 = (char **)malloc(sizeof(char *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (char *)malloc(100*sizeof(char));
+    if (p2 == NULL) {exit(-1);}
+    memset(p2, 'A', 100-1);
+    p2[100-1] = '\0';
+    *p1 = p2;
     /* FIX: Do not free data in the source */
-    /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLine(data);
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
+    printLine(*p1);
+    free((__raw void *)p1);
+    free(p2);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    char * data;
-    /* Initialize data */
-    data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    memset(data, 'A', 100-1);
-    data[100-1] = '\0';
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    char **p1;
+    char **p3;
+    char *p2;
+    p1 = NULL;
+    p3 = NULL;
+    p2 = NULL;
+    p1 = (char **)malloc(sizeof(char *));
+    if (p1 == NULL) {exit(-1);}
+    p2 = (char *)malloc(100*sizeof(char));
+    if (p2 == NULL) {exit(-1);}
+    memset(p2, 'A', 100-1);
+    p2[100-1] = '\0';
+    free((__raw void *)p1);
+    p3 = (char **)malloc(sizeof(char *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = p2;
     /* FIX: Don't use data that may have been freed already */
-    /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
-    /* do nothing */
-    ; /* empty statement needed for some flow variants */
+    free((__raw void *)p3);
+    free(p2);
 }
 
 void CWE416_Use_After_Free__malloc_free_char_01_good()
@@ -90,7 +108,7 @@ void CWE416_Use_After_Free__malloc_free_char_01_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

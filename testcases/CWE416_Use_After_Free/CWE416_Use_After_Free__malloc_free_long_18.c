@@ -23,26 +23,39 @@ Template File: sources-sinks-18.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_long_18_bad()
 {
-    long * data;
+    /* SigRISCV Stage 2: use long** so freed heap block triggers ls QARMA failure */
+    long **pp;
+    long **p3;
+    long *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     goto source;
 source:
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
+    pp = (long **)malloc(sizeof(long *));
+    if (pp == NULL) {exit(-1);}
+    inner = (long *)malloc(100*sizeof(long));
+    if (inner == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5L;
+            inner[i] = 5L;
         }
     }
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
     /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)pp);
+    p3 = (long **)malloc(sizeof(long *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = inner;
     goto sink;
 sink:
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLine(data[0]);
+    printLongLine((*pp)[0]);
+    free((__raw void *)p3);
+    free(inner);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -53,52 +66,73 @@ sink:
 /* goodB2G() - use badsource and goodsink by reversing the blocks on the second goto statement */
 static void goodB2G()
 {
-    long * data;
+    /* SigRISCV Stage 2: use long** so freed heap block triggers ls QARMA failure */
+    long **pp;
+    long **p3;
+    long *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     goto source;
 source:
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
+    pp = (long **)malloc(sizeof(long *));
+    if (pp == NULL) {exit(-1);}
+    inner = (long *)malloc(100*sizeof(long));
+    if (inner == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5L;
+            inner[i] = 5L;
         }
     }
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
     /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
+    free((__raw void *)pp);
+    p3 = (long **)malloc(sizeof(long *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = inner;
     goto sink;
 sink:
     /* FIX: Don't use data that may have been freed already */
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     /* do nothing */
     ; /* empty statement needed for some flow variants */
+    free((__raw void *)p3);
+    free(inner);
 }
 
 /* goodG2B() - use goodsource and badsink by reversing the blocks on the first goto statement */
 static void goodG2B()
 {
-    long * data;
+    /* SigRISCV Stage 2: use long** so freed heap block triggers ls QARMA failure */
+    long **pp;
+    long *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     goto source;
 source:
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
+    pp = (long **)malloc(sizeof(long *));
+    if (pp == NULL) {exit(-1);}
+    inner = (long *)malloc(100*sizeof(long));
+    if (inner == NULL) {exit(-1);}
     {
         size_t i;
         for(i = 0; i < 100; i++)
         {
-            data[i] = 5L;
+            inner[i] = 5L;
         }
     }
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
     /* FIX: Do not free data in the source */
     goto sink;
 sink:
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLine(data[0]);
+    printLongLine((*pp)[0]);
+    free((__raw void *)pp);
+    free(inner);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -117,7 +151,7 @@ void CWE416_Use_After_Free__malloc_free_long_18_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

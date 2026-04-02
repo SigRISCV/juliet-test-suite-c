@@ -13,6 +13,7 @@ Template File: sources-sinks-63a.tmpl.c
  *    BadSink : Use data
  * Flow Variant: 63 Data flow: pointer to data passed from one function to another in different source files
  *
+ * SigRISCV Stage 2: pass pp (freed heap block) directly to sink so *pp triggers ls QARMA failure.
  * */
 
 #include "std_testcase.h"
@@ -26,16 +27,27 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_63b_badSink(wchar_t * * dataPtr)
 
 void CWE416_Use_After_Free__malloc_free_wchar_t_63_bad()
 {
-    wchar_t * data;
-    /* Initialize data */
-    data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    wmemset(data, L'A', 100-1);
-    data[100-1] = L'\0';
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
-    CWE416_Use_After_Free__malloc_free_wchar_t_63b_badSink(&data);
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
+    pp = (wchar_t **)malloc(sizeof(wchar_t *));
+    if (pp == NULL) {exit(-1);}
+    inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+    if (inner == NULL) {exit(-1);}
+    wmemset(inner, L'A', 100-1);
+    inner[100-1] = L'\0';
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
+    /* POTENTIAL FLAW: Free pp (outer wrapper) and immediately reallocate the same-size slot */
+    free((__raw void *)pp);
+    p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = inner;
+    /* Pass stale pp to sink: *pp in sink triggers ls QARMA mismatch */
+    CWE416_Use_After_Free__malloc_free_wchar_t_63b_badSink(pp);
 }
 
 #endif /* OMITBAD */
@@ -47,15 +59,22 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_63b_goodG2BSink(wchar_t * * data
 
 static void goodG2B()
 {
-    wchar_t * data;
-    /* Initialize data */
-    data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    wmemset(data, L'A', 100-1);
-    data[100-1] = L'\0';
-    /* FIX: Do not free data in the source */
-    CWE416_Use_After_Free__malloc_free_wchar_t_63b_goodG2BSink(&data);
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t *inner;
+    pp = NULL;
+    inner = NULL;
+    pp = (wchar_t **)malloc(sizeof(wchar_t *));
+    if (pp == NULL) {exit(-1);}
+    inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+    if (inner == NULL) {exit(-1);}
+    wmemset(inner, L'A', 100-1);
+    inner[100-1] = L'\0';
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
+    /* FIX: Do not free pp before use - pass valid pp to sink */
+    CWE416_Use_After_Free__malloc_free_wchar_t_63b_goodG2BSink(pp);
+    free(inner);
+    free((__raw void *)pp);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
@@ -63,16 +82,29 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_63b_goodB2GSink(wchar_t * * data
 
 static void goodB2G()
 {
-    wchar_t * data;
-    /* Initialize data */
-    data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    wmemset(data, L'A', 100-1);
-    data[100-1] = L'\0';
-    /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-    free(data);
-    CWE416_Use_After_Free__malloc_free_wchar_t_63b_goodB2GSink(&data);
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
+    pp = (wchar_t **)malloc(sizeof(wchar_t *));
+    if (pp == NULL) {exit(-1);}
+    inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+    if (inner == NULL) {exit(-1);}
+    wmemset(inner, L'A', 100-1);
+    inner[100-1] = L'\0';
+    *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
+    /* POTENTIAL FLAW: Free pp and reallocate the same-size slot */
+    free((__raw void *)pp);
+    p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+    if (p3 == NULL) {exit(-1);}
+    *p3 = inner;
+    /* Pass stale pp to good sink (which does nothing with it) */
+    CWE416_Use_After_Free__malloc_free_wchar_t_63b_goodB2GSink(pp);
+    free((__raw void *)p3);
+    free(inner);
 }
 
 void CWE416_Use_After_Free__malloc_free_wchar_t_63_good()
@@ -90,7 +122,7 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_63_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

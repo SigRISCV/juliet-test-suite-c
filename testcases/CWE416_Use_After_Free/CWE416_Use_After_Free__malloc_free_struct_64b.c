@@ -13,6 +13,7 @@ Template File: sources-sinks-64b.tmpl.c
  *    BadSink : Use data
  * Flow Variant: 64 Data flow: void pointer to data passed from one function to another in different source files
  *
+ * SigRISCV Stage 2: dataVoidPtr is the freed heap block (twoIntsStruct**); *((int**)dataVoidPtr) triggers ls QARMA failure.
  * */
 
 #include "std_testcase.h"
@@ -23,12 +24,11 @@ Template File: sources-sinks-64b.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_struct_64b_badSink(void * dataVoidPtr)
 {
+    /* SigRISCV Stage 2: dataVoidPtr is freed heap block (twoIntsStruct**); ls from *pp → QARMA mismatch → SIGILL */
     /* cast void pointer to a pointer of the appropriate type */
-    twoIntsStruct * * dataPtr = (twoIntsStruct * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    twoIntsStruct * data = (*dataPtr);
-    /* POTENTIAL FLAW: Use of data that may have been freed */
-    printStructLine(&data[0]);
+    twoIntsStruct ** pp = (twoIntsStruct **)dataVoidPtr;
+    /* POTENTIAL FLAW: Use of data that may have been freed - ls from freed heap block */
+    printStructLine(&(*pp)[0]);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -39,12 +39,11 @@ void CWE416_Use_After_Free__malloc_free_struct_64b_badSink(void * dataVoidPtr)
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE416_Use_After_Free__malloc_free_struct_64b_goodG2BSink(void * dataVoidPtr)
 {
+    /* SigRISCV Stage 2: dataVoidPtr is valid heap block (twoIntsStruct**); ls from *pp succeeds */
     /* cast void pointer to a pointer of the appropriate type */
-    twoIntsStruct * * dataPtr = (twoIntsStruct * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    twoIntsStruct * data = (*dataPtr);
+    twoIntsStruct ** pp = (twoIntsStruct **)dataVoidPtr;
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printStructLine(&data[0]);
+    printStructLine(&(*pp)[0]);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -52,10 +51,9 @@ void CWE416_Use_After_Free__malloc_free_struct_64b_goodG2BSink(void * dataVoidPt
 void CWE416_Use_After_Free__malloc_free_struct_64b_goodB2GSink(void * dataVoidPtr)
 {
     /* cast void pointer to a pointer of the appropriate type */
-    twoIntsStruct * * dataPtr = (twoIntsStruct * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    twoIntsStruct * data = (*dataPtr);
-    /* FIX: Don't use data that may have been freed already */
+    twoIntsStruct ** pp = (twoIntsStruct **)dataVoidPtr;
+    (void)pp; /* suppress unused variable warning */
+    /* FIX: Don't use pp that may have been freed already */
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     /* do nothing */
     ; /* empty statement needed for some flow variants */

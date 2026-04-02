@@ -23,24 +23,35 @@ Template File: sources-sinks-15.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_struct_15_bad()
 {
-    twoIntsStruct * data;
+    /* SigRISCV Stage 2: use twoIntsStruct** so freed heap block triggers ls QARMA failure */
+    twoIntsStruct **pp;
+    twoIntsStruct **p3;
+    twoIntsStruct *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-        if (data == NULL) {exit(-1);}
+        pp = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (pp == NULL) {exit(-1);}
+        inner = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i].intOne = 1;
-                data[i].intTwo = 2;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i].intOne = 1;
+            inner[i].intTwo = 2;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -51,7 +62,9 @@ void CWE416_Use_After_Free__malloc_free_struct_15_bad()
     {
     case 7:
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printStructLine(&data[0]);
+        printStructLine(&(*pp)[0]);
+        free((__raw void *)p3);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         break;
     default:
@@ -68,24 +81,35 @@ void CWE416_Use_After_Free__malloc_free_struct_15_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second switch to switch(8) */
 static void goodB2G1()
 {
-    twoIntsStruct * data;
+    /* SigRISCV Stage 2: use twoIntsStruct** so freed heap block triggers ls QARMA failure */
+    twoIntsStruct **pp;
+    twoIntsStruct **p3;
+    twoIntsStruct *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-        if (data == NULL) {exit(-1);}
+        pp = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (pp == NULL) {exit(-1);}
+        inner = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i].intOne = 1;
-                data[i].intTwo = 2;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i].intOne = 1;
+            inner[i].intTwo = 2;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -103,6 +127,8 @@ static void goodB2G1()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
         break;
     }
 }
@@ -110,24 +136,35 @@ static void goodB2G1()
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second switch */
 static void goodB2G2()
 {
-    twoIntsStruct * data;
+    /* SigRISCV Stage 2: use twoIntsStruct** so freed heap block triggers ls QARMA failure */
+    twoIntsStruct **pp;
+    twoIntsStruct **p3;
+    twoIntsStruct *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-        if (data == NULL) {exit(-1);}
+        pp = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (pp == NULL) {exit(-1);}
+        inner = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i].intOne = 1;
-                data[i].intTwo = 2;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i].intOne = 1;
+            inner[i].intTwo = 2;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -141,6 +178,8 @@ static void goodB2G2()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -152,9 +191,12 @@ static void goodB2G2()
 /* goodG2B1() - use goodsource and badsink by changing the first switch to switch(5) */
 static void goodG2B1()
 {
-    twoIntsStruct * data;
+    /* SigRISCV Stage 2: use twoIntsStruct** so freed heap block triggers ls QARMA failure */
+    twoIntsStruct **pp;
+    twoIntsStruct *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     switch(5)
     {
     case 6:
@@ -162,16 +204,19 @@ static void goodG2B1()
         printLine("Benign, fixed string");
         break;
     default:
-        data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-        if (data == NULL) {exit(-1);}
+        pp = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (pp == NULL) {exit(-1);}
+        inner = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i].intOne = 1;
-                data[i].intTwo = 2;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i].intOne = 1;
+            inner[i].intTwo = 2;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
         break;
     }
@@ -179,7 +224,9 @@ static void goodG2B1()
     {
     case 7:
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printStructLine(&data[0]);
+        printStructLine(&(*pp)[0]);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         break;
     default:
@@ -192,22 +239,28 @@ static void goodG2B1()
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first switch */
 static void goodG2B2()
 {
-    twoIntsStruct * data;
+    /* SigRISCV Stage 2: use twoIntsStruct** so freed heap block triggers ls QARMA failure */
+    twoIntsStruct **pp;
+    twoIntsStruct *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-        if (data == NULL) {exit(-1);}
+        pp = (twoIntsStruct **)malloc(sizeof(twoIntsStruct *));
+        if (pp == NULL) {exit(-1);}
+        inner = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
+        if (inner == NULL) {exit(-1);}
         {
-            size_t i;
-            for(i = 0; i < 100; i++)
-            {
-                data[i].intOne = 1;
-                data[i].intTwo = 2;
-            }
+        size_t i;
+        for(i = 0; i < 100; i++)
+        {
+            inner[i].intOne = 1;
+            inner[i].intTwo = 2;
         }
+    }
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
         break;
     default:
@@ -219,7 +272,9 @@ static void goodG2B2()
     {
     case 7:
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printStructLine(&data[0]);
+        printStructLine(&(*pp)[0]);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         break;
     default:
@@ -246,7 +301,7 @@ void CWE416_Use_After_Free__malloc_free_struct_15_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

@@ -23,18 +23,29 @@ Template File: sources-sinks-15.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_wchar_t_15_bad()
 {
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -45,7 +56,9 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_15_bad()
     {
     case 7:
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printWLine(data);
+        printWLine(*pp);
+        free((__raw void *)p3);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         break;
     default:
@@ -62,18 +75,29 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_15_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second switch to switch(8) */
 static void goodB2G1()
 {
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -91,6 +115,8 @@ static void goodB2G1()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
         break;
     }
 }
@@ -98,18 +124,29 @@ static void goodB2G1()
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second switch */
 static void goodB2G2()
 {
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -123,6 +160,8 @@ static void goodB2G2()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -134,9 +173,12 @@ static void goodB2G2()
 /* goodG2B1() - use goodsource and badsink by changing the first switch to switch(5) */
 static void goodG2B1()
 {
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     switch(5)
     {
     case 6:
@@ -144,10 +186,13 @@ static void goodG2B1()
         printLine("Benign, fixed string");
         break;
     default:
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
         break;
     }
@@ -155,7 +200,9 @@ static void goodG2B1()
     {
     case 7:
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printWLine(data);
+        printWLine(*pp);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         break;
     default:
@@ -168,16 +215,22 @@ static void goodG2B1()
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first switch */
 static void goodG2B2()
 {
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     switch(6)
     {
     case 6:
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
         break;
     default:
@@ -189,7 +242,9 @@ static void goodG2B2()
     {
     case 7:
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printWLine(data);
+        printWLine(*pp);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         break;
     default:
@@ -216,7 +271,7 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_15_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

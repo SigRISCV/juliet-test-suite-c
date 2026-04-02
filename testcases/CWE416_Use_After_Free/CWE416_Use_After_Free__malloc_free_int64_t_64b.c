@@ -13,6 +13,7 @@ Template File: sources-sinks-64b.tmpl.c
  *    BadSink : Use data
  * Flow Variant: 64 Data flow: void pointer to data passed from one function to another in different source files
  *
+ * SigRISCV Stage 2: dataVoidPtr is the freed heap block (int64_t **); *((int64_t **)dataVoidPtr) triggers ls QARMA failure.
  * */
 
 #include "std_testcase.h"
@@ -23,12 +24,11 @@ Template File: sources-sinks-64b.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_int64_t_64b_badSink(void * dataVoidPtr)
 {
+    /* SigRISCV Stage 2: dataVoidPtr is freed heap block (int64_t **); ls from *pp → QARMA mismatch → SIGILL */
     /* cast void pointer to a pointer of the appropriate type */
-    int64_t * * dataPtr = (int64_t * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    int64_t * data = (*dataPtr);
-    /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLongLine(data[0]);
+    int64_t ** pp = (int64_t **)dataVoidPtr;
+    /* POTENTIAL FLAW: Use of data that may have been freed - ls from freed heap block */
+    printLongLongLine((*pp)[0]);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -39,12 +39,11 @@ void CWE416_Use_After_Free__malloc_free_int64_t_64b_badSink(void * dataVoidPtr)
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE416_Use_After_Free__malloc_free_int64_t_64b_goodG2BSink(void * dataVoidPtr)
 {
+    /* SigRISCV Stage 2: dataVoidPtr is valid heap block (int64_t **); ls from *pp succeeds */
     /* cast void pointer to a pointer of the appropriate type */
-    int64_t * * dataPtr = (int64_t * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    int64_t * data = (*dataPtr);
+    int64_t ** pp = (int64_t **)dataVoidPtr;
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLongLine(data[0]);
+    printLongLongLine((*pp)[0]);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -52,10 +51,9 @@ void CWE416_Use_After_Free__malloc_free_int64_t_64b_goodG2BSink(void * dataVoidP
 void CWE416_Use_After_Free__malloc_free_int64_t_64b_goodB2GSink(void * dataVoidPtr)
 {
     /* cast void pointer to a pointer of the appropriate type */
-    int64_t * * dataPtr = (int64_t * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    int64_t * data = (*dataPtr);
-    /* FIX: Don't use data that may have been freed already */
+    int64_t ** pp = (int64_t **)dataVoidPtr;
+    (void)pp; /* suppress unused variable warning */
+    /* FIX: Don't use pp that may have been freed already */
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     /* do nothing */
     ; /* empty statement needed for some flow variants */

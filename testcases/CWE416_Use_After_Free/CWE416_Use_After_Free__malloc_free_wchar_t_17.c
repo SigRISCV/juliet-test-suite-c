@@ -24,22 +24,35 @@ Template File: sources-sinks-17.tmpl.c
 void CWE416_Use_After_Free__malloc_free_wchar_t_17_bad()
 {
     int i,j;
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     for(i = 0; i < 1; i++)
     {
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
     }
     for(j = 0; j < 1; j++)
     {
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printWLine(data);
+        printWLine(*pp);
+        free((__raw void *)p3);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     }
 }
@@ -52,17 +65,28 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_17_bad()
 static void goodB2G()
 {
     int i,k;
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t **p3;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    p3 = NULL;
+    inner = NULL;
     for(i = 0; i < 1; i++)
     {
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* POTENTIAL FLAW: Free data in the source - the bad sink attempts to use data */
-        free(data);
+        free((__raw void *)pp);
+        p3 = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = inner;
     }
     for(k = 0; k < 1; k++)
     {
@@ -70,6 +94,8 @@ static void goodB2G()
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
         /* do nothing */
         ; /* empty statement needed for some flow variants */
+        free((__raw void *)p3);
+        free(inner);
     }
 }
 
@@ -77,21 +103,29 @@ static void goodB2G()
 static void goodG2B()
 {
     int h,j;
-    wchar_t * data;
+    /* SigRISCV Stage 2: use wchar_t** so freed heap block triggers ls QARMA failure */
+    wchar_t **pp;
+    wchar_t *inner;
     /* Initialize data */
-    data = NULL;
+    pp = NULL;
+    inner = NULL;
     for(h = 0; h < 1; h++)
     {
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        wmemset(data, L'A', 100-1);
-        data[100-1] = L'\0';
+        pp = (wchar_t **)malloc(sizeof(wchar_t *));
+        if (pp == NULL) {exit(-1);}
+        inner = (wchar_t *)malloc(100*sizeof(wchar_t));
+        if (inner == NULL) {exit(-1);}
+        wmemset(inner, L'A', 100-1);
+        inner[100-1] = L'\0';
+        *pp = inner; /* ss: QARMA-encrypt inner stored at heap address pp */
         /* FIX: Do not free data in the source */
     }
     for(j = 0; j < 1; j++)
     {
         /* POTENTIAL FLAW: Use of data that may have been freed */
-        printWLine(data);
+        printWLine(*pp);
+        free((__raw void *)pp);
+        free(inner);
         /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     }
 }
@@ -111,7 +145,7 @@ void CWE416_Use_After_Free__malloc_free_wchar_t_17_good()
 
 #ifdef INCLUDEMAIN
 
-int main(int argc, char * argv[])
+int main(int argc, char * __raw argv[])
 {
     /* seed randomness */
     srand( (unsigned)time(NULL) );

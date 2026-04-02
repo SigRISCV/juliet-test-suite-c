@@ -13,6 +13,7 @@ Template File: sources-sinks-63b.tmpl.c
  *    BadSink : Use data
  * Flow Variant: 63 Data flow: pointer to data passed from one function to another in different source files
  *
+ * SigRISCV Stage 2: dataPtr is now a freed heap block; *dataPtr triggers ls QARMA failure.
  * */
 
 #include "std_testcase.h"
@@ -23,9 +24,9 @@ Template File: sources-sinks-63b.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_char_63b_badSink(char * * dataPtr)
 {
-    char * data = *dataPtr;
+    /* SigRISCV Stage 2: dataPtr is freed heap block; ls from *dataPtr → QARMA mismatch → SIGILL */
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLine(data);
+    printLine(*dataPtr);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -36,17 +37,16 @@ void CWE416_Use_After_Free__malloc_free_char_63b_badSink(char * * dataPtr)
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE416_Use_After_Free__malloc_free_char_63b_goodG2BSink(char * * dataPtr)
 {
-    char * data = *dataPtr;
+    /* SigRISCV Stage 2: dataPtr is valid heap block; ls from *dataPtr succeeds */
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLine(data);
+    printLine(*dataPtr);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 void CWE416_Use_After_Free__malloc_free_char_63b_goodB2GSink(char * * dataPtr)
 {
-    char * data = *dataPtr;
-    /* FIX: Don't use data that may have been freed already */
+    /* FIX: Don't use dataPtr that may have been freed already */
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     /* do nothing */
     ; /* empty statement needed for some flow variants */

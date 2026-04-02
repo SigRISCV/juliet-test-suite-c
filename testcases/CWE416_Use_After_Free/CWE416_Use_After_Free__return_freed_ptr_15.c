@@ -15,14 +15,18 @@ Template File: point-flaw-15.tmpl.c
 
 #include "std_testcase.h"
 
-static char * helperBad(char * aString)
+static char ** helperBad(char * aString)
 {
     size_t i = 0;
     size_t j;
+    char **p1 = NULL;
+    char **p3 = NULL;
     char * reversedString = NULL;
     if (aString != NULL)
     {
         i = strlen(aString);
+        p1 = (char **)malloc(sizeof(char *));
+        if (p1 == NULL) {exit(-1);}
         reversedString = (char *) malloc(i+1);
         if (reversedString == NULL) {exit(-1);}
         for (j = 0; j < i; j++)
@@ -30,9 +34,12 @@ static char * helperBad(char * aString)
             reversedString[j] = aString[i-j-1];
         }
         reversedString[i] = '\0';
-        /* FLAW: Freeing a memory block and then returning a pointer to the freed memory */
-        free(reversedString);
-        return reversedString;
+        /* FLAW: Freeing the slot and returning a stale pointer to it */
+        free((__raw void *)p1);
+        p3 = (char **)malloc(sizeof(char *));
+        if (p3 == NULL) {exit(-1);}
+        *p3 = reversedString;
+        return p1;
     }
     else
     {
@@ -40,14 +47,17 @@ static char * helperBad(char * aString)
     }
 }
 
-static char * helperGood(char * aString)
+static char ** helperGood(char * aString)
 {
     size_t i = 0;
     size_t j;
+    char **p1 = NULL;
     char * reversedString = NULL;
     if (aString != NULL)
     {
         i = strlen(aString);
+        p1 = (char **)malloc(sizeof(char *));
+        if (p1 == NULL) {exit(-1);}
         reversedString = (char *) malloc(i+1);
         if (reversedString == NULL) {exit(-1);}
         for (j = 0; j < i; j++)
@@ -55,8 +65,9 @@ static char * helperGood(char * aString)
             reversedString[j] = aString[i-j-1];
         }
         reversedString[i] = '\0';
-        /* FIX: Do not free the memory before returning */
-        return reversedString;
+        /* FIX: Return a live slot containing the protected pointer */
+        *p1 = reversedString;
+        return p1;
     }
     else
     {
@@ -73,8 +84,8 @@ void CWE416_Use_After_Free__return_freed_ptr_15_bad()
     case 6:
     {
         /* Call the bad helper function */
-        char * reversedString = helperBad("BadSink");
-        printLine(reversedString);
+        char ** reversedStringSlot = helperBad("BadSink");
+        printLine(*reversedStringSlot);
         /* free(reversedString);
          * This call to free() was removed because we want the tool to detect the use after free,
          * but we don't want that function to be free(). Essentially we want to avoid a double free
@@ -104,12 +115,10 @@ static void good1()
     default:
     {
         /* Call the good helper function */
-        char * reversedString = helperGood("GoodSink");
-        printLine(reversedString);
-        /* free(reversedString);
-         * This call to free() was removed because we want the tool to detect the use after free,
-         * but we don't want that function to be free(). Essentially we want to avoid a double free
-         */
+        char ** reversedStringSlot = helperGood("GoodSink");
+        printLine(*reversedStringSlot);
+        free(*reversedStringSlot);
+        free((__raw void *)reversedStringSlot);
     }
     break;
     }
@@ -123,12 +132,10 @@ static void good2()
     case 6:
     {
         /* Call the good helper function */
-        char * reversedString = helperGood("GoodSink");
-        printLine(reversedString);
-        /* free(reversedString);
-         * This call to free() was removed because we want the tool to detect the use after free,
-         * but we don't want that function to be free(). Essentially we want to avoid a double free
-         */
+        char ** reversedStringSlot = helperGood("GoodSink");
+        printLine(*reversedStringSlot);
+        free(*reversedStringSlot);
+        free((__raw void *)reversedStringSlot);
     }
     break;
     default:

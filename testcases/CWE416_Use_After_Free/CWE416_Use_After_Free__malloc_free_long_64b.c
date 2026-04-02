@@ -13,6 +13,7 @@ Template File: sources-sinks-64b.tmpl.c
  *    BadSink : Use data
  * Flow Variant: 64 Data flow: void pointer to data passed from one function to another in different source files
  *
+ * SigRISCV Stage 2: dataVoidPtr is the freed heap block (long**); *((int**)dataVoidPtr) triggers ls QARMA failure.
  * */
 
 #include "std_testcase.h"
@@ -23,12 +24,11 @@ Template File: sources-sinks-64b.tmpl.c
 
 void CWE416_Use_After_Free__malloc_free_long_64b_badSink(void * dataVoidPtr)
 {
+    /* SigRISCV Stage 2: dataVoidPtr is freed heap block (long**); ls from *pp → QARMA mismatch → SIGILL */
     /* cast void pointer to a pointer of the appropriate type */
-    long * * dataPtr = (long * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    long * data = (*dataPtr);
-    /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLine(data[0]);
+    long ** pp = (long **)dataVoidPtr;
+    /* POTENTIAL FLAW: Use of data that may have been freed - ls from freed heap block */
+    printLongLine((*pp)[0]);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -39,12 +39,11 @@ void CWE416_Use_After_Free__malloc_free_long_64b_badSink(void * dataVoidPtr)
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE416_Use_After_Free__malloc_free_long_64b_goodG2BSink(void * dataVoidPtr)
 {
+    /* SigRISCV Stage 2: dataVoidPtr is valid heap block (long**); ls from *pp succeeds */
     /* cast void pointer to a pointer of the appropriate type */
-    long * * dataPtr = (long * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    long * data = (*dataPtr);
+    long ** pp = (long **)dataVoidPtr;
     /* POTENTIAL FLAW: Use of data that may have been freed */
-    printLongLine(data[0]);
+    printLongLine((*pp)[0]);
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
 }
 
@@ -52,10 +51,9 @@ void CWE416_Use_After_Free__malloc_free_long_64b_goodG2BSink(void * dataVoidPtr)
 void CWE416_Use_After_Free__malloc_free_long_64b_goodB2GSink(void * dataVoidPtr)
 {
     /* cast void pointer to a pointer of the appropriate type */
-    long * * dataPtr = (long * *)dataVoidPtr;
-    /* dereference dataPtr into data */
-    long * data = (*dataPtr);
-    /* FIX: Don't use data that may have been freed already */
+    long ** pp = (long **)dataVoidPtr;
+    (void)pp; /* suppress unused variable warning */
+    /* FIX: Don't use pp that may have been freed already */
     /* POTENTIAL INCIDENTAL - Possible memory leak here if data was not freed */
     /* do nothing */
     ; /* empty statement needed for some flow variants */
