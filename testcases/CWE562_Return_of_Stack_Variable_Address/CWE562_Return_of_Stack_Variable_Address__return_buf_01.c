@@ -9,20 +9,37 @@
 
 #ifndef OMITBAD
 
-static char *helperBad()
+typedef struct
 {
-    char charString[] = "helperBad string";
+    char *slot;
+    char buffer[32];
+} CWE562_badFrame;
 
-    /* FLAW: returning stack-allocated buffer */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreturn-stack-address"
-    return charString; /* this may generate a warning -- it's on purpose */
-#pragma clang diagnostic pop
+static char **helperBadA()
+{
+    CWE562_badFrame frame;
+
+    strcpy(frame.buffer, "helperBadA string");
+    frame.slot = frame.buffer;
+
+    /* FLAW: returning stack-allocated pointer slot */
+    return &frame.slot;
+}
+
+static void helperBadB()
+{
+    CWE562_badFrame frame;
+
+    frame.slot = (char *)malloc(sizeof(frame.buffer));
+    if (frame.slot == NULL) {exit(-1);}
+    strcpy(frame.slot, "helperBadB string");
 }
 
 void CWE562_Return_of_Stack_Variable_Address__return_buf_01_bad() 
 {
-    printLine(helperBad());
+    char **ptr = helperBadA();
+    helperBadB();
+    printLine(*ptr);
 }
 
 #endif /* OMITBAD */
@@ -30,21 +47,22 @@ void CWE562_Return_of_Stack_Variable_Address__return_buf_01_bad()
 
 #ifndef OMITGOOD
 
-static char *helperGood1()
+static char **helperGood1()
 {
     static char charString[] = "helperGood1 string";
+    static char *slot = charString;
 
     /* FIX: don't return a stack-allocated buffer
      * you can use static (i.e., global) variables but this renders your
      * code, and all code that uses it, non-re-entrant and non-threadsafe,
      * and hence is not a complete solution.  We do it anyway
      */
-    return charString;
+    return &slot;
 }
 
 static void good1() 
 {
-    printLine(helperGood1());
+    printLine(*helperGood1());
 }
 
 void CWE562_Return_of_Stack_Variable_Address__return_buf_01_good() 
