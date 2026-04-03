@@ -19,19 +19,17 @@ Template File: sources-sinks-01.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_wchar_t_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_wchar_t_01_bad()
 {
-    wchar_t * data;
+    wchar_t ** data;
     /* Initialize data */
     data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_wchar_t_badSource();
+    CWE415_Double_Free_sigriscv_wchar_t_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -41,26 +39,20 @@ void CWE415_Double_Free__malloc_free_wchar_t_01_bad()
 /* goodG2B uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    wchar_t * data;
+    wchar_t ** data;
     /* Initialize data */
     data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_wchar_t_goodG2BSource();
+    CWE415_Double_Free_sigriscv_wchar_t_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    wchar_t * data;
+    wchar_t ** data;
     /* Initialize data */
     data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_wchar_t_goodB2GSource();
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */
