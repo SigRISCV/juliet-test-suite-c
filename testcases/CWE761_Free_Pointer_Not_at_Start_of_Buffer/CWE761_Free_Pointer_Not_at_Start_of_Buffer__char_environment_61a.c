@@ -17,6 +17,8 @@ Template File: source-sinks-61a.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_environment_helpers.h"
+
 
 #define ENV_VARIABLE "ADD"
 
@@ -40,17 +42,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_61_bad()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     data = CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_61b_badSource(data);
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != '\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_char_environment_bad_sink(data);
 }
 
 #endif /* OMITBAD */

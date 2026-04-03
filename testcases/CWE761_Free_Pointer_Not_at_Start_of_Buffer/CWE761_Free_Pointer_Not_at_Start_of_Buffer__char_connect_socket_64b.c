@@ -39,6 +39,8 @@ Template File: source-sinks-64b.tmpl.c
 #define TCP_PORT 27015
 #define IP_ADDRESS "127.0.0.1"
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_connect_socket_helpers.h"
+
 #define SEARCH_CHAR 'S'
 
 #ifndef OMITBAD
@@ -49,17 +51,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_connect_socket_64b_badSink
     char * * dataPtr = (char * *)dataVoidPtr;
     /* dereference dataPtr into data */
     char * data = (*dataPtr);
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != '\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_char_connect_socket_bad_sink(data);
 }
 
 #endif /* OMITBAD */

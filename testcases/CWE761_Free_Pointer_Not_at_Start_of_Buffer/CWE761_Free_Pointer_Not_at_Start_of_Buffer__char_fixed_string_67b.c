@@ -17,8 +17,10 @@ Template File: source-sinks-67b.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_fixed_string_helpers.h"
 
-#define BAD_SOURCE_FIXED_STRING "Fixed String" /* MAINTENANCE NOTE: This string must contain the SEARCH_CHAR */
+
+#define BAD_SOURCE_FIXED_STRING CWE761_SIGRISCV_CHAR_FIXED_STRING /* MAINTENANCE NOTE: SEARCH_CHAR is at an aligned offset */
 
 #define SEARCH_CHAR 'S'
 
@@ -32,17 +34,7 @@ typedef struct _CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_fixed_string_67
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_fixed_string_67b_badSink(CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_fixed_string_67_structType myStruct)
 {
     char * data = myStruct.structFirst;
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != '\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_char_fixed_bad_sink(data);
 }
 
 #endif /* OMITBAD */

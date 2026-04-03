@@ -39,6 +39,8 @@ Template File: source-sinks-54b.tmpl.c
 #define TCP_PORT 27015
 #define LISTEN_BACKLOG 5
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_listen_socket_helpers.h"
+
 #define SEARCH_CHAR 'S'
 
 #ifndef OMITBAD

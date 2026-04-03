@@ -26,6 +26,8 @@ Template File: source-sinks-67b.tmpl.c
 
 #define SEARCH_CHAR 'S'
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_file_helpers.h"
+
 typedef struct _CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67_structType
 {
     char * structFirst;
@@ -36,17 +38,7 @@ typedef struct _CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67_structT
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67b_badSink(CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67_structType myStruct)
 {
     char * data = myStruct.structFirst;
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != '\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_char_file_bad_sink(data);
 }
 
 #endif /* OMITBAD */

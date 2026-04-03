@@ -17,6 +17,8 @@ Template File: source-sinks-54b.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_environment_helpers.h"
+
 
 #ifdef _WIN32
 #define ENV_VARIABLE L"ADD"

@@ -26,6 +26,8 @@ Template File: source-sinks-67a.tmpl.c
 
 #define SEARCH_CHAR 'S'
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_file_helpers.h"
+
 typedef struct _CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67_structType
 {
     char * structFirst;
@@ -44,25 +46,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67_bad()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Read input from a file */
-        size_t dataLen = strlen(data);
-        __raw FILE * pFile;
-        /* if there is room in data, attempt to read the input from a file */
-        if (100-dataLen > 1)
-        {
-            pFile = fopen(FILENAME, "r");
-            if (pFile != NULL)
-            {
-                /* POTENTIAL FLAW: Read data from a file */
-                if (fgets(data+dataLen, (int)(100-dataLen), pFile) == NULL)
-                {
-                    printLine("fgets() failed");
-                    /* Restore NUL terminator if fgets fails */
-                    data[dataLen] = '\0';
-                }
-                fclose(pFile);
-            }
-        }
+        CWE761_sigriscv_char_file_source(data, FILENAME);
     }
     myStruct.structFirst = data;
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67b_badSink(myStruct);
@@ -83,25 +67,7 @@ static void goodB2G()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Read input from a file */
-        size_t dataLen = strlen(data);
-        __raw FILE * pFile;
-        /* if there is room in data, attempt to read the input from a file */
-        if (100-dataLen > 1)
-        {
-            pFile = fopen(FILENAME, "r");
-            if (pFile != NULL)
-            {
-                /* POTENTIAL FLAW: Read data from a file */
-                if (fgets(data+dataLen, (int)(100-dataLen), pFile) == NULL)
-                {
-                    printLine("fgets() failed");
-                    /* Restore NUL terminator if fgets fails */
-                    data[dataLen] = '\0';
-                }
-                fclose(pFile);
-            }
-        }
+        CWE761_sigriscv_char_file_source(data, FILENAME);
     }
     myStruct.structFirst = data;
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_file_67b_goodB2GSink(myStruct);

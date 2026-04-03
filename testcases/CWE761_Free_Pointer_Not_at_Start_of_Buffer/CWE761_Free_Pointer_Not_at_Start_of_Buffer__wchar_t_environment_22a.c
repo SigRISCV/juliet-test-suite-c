@@ -17,6 +17,8 @@ Template File: source-sinks-22a.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_environment_helpers.h"
+
 
 #ifdef _WIN32
 #define ENV_VARIABLE L"ADD"
@@ -58,15 +60,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_bad()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_badGlobal = 1; /* true */
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_badSink(data);
@@ -90,15 +84,7 @@ static void goodB2G1()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_goodB2G1Global = 0; /* false */
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_goodB2G1Sink(data);
@@ -114,15 +100,7 @@ static void goodB2G2()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_goodB2G2Global = 1; /* true */
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_22_goodB2G2Sink(data);

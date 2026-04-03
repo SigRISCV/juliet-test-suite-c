@@ -20,6 +20,8 @@ Template File: source-sinks-22b.tmpl.c
 
 #define SEARCH_CHAR L'S'
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_file_helpers.h"
+
 #ifndef OMITBAD
 
 /* The global variable below is used to drive control flow in the sink function */
@@ -29,17 +31,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_file_22_badSink(wchar_t
 {
     if(CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_file_22_badGlobal)
     {
-        /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-         * memory block not at the start of the buffer */
-        for (; *data != L'\0'; data++)
-        {
-            if (*data == SEARCH_CHAR)
-            {
-                printLine("We have a match!");
-                break;
-            }
-        }
-        free(data);
+    CWE761_sigriscv_wchar_file_bad_sink(data);
     }
 }
 

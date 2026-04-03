@@ -39,23 +39,15 @@ Template File: source-sinks-51b.tmpl.c
 #define TCP_PORT 27015
 #define IP_ADDRESS "127.0.0.1"
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_connect_socket_helpers.h"
+
 #define SEARCH_CHAR L'S'
 
 #ifndef OMITBAD
 
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_connect_socket_51b_badSink(wchar_t * data)
 {
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != L'\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_wchar_connect_socket_bad_sink(data);
 }
 
 #endif /* OMITBAD */

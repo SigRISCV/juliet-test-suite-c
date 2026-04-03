@@ -18,6 +18,8 @@ Template File: source-sinks-07.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_console_helpers.h"
+
 #define SEARCH_CHAR 'S'
 
 /* The variable below is not declared "const", but is never assigned
@@ -34,43 +36,11 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_07_bad()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Read input from the console */
-        size_t dataLen = strlen(data);
-        /* if there is room in data, read into it from the console */
-        if (100-dataLen > 1)
-        {
-            /* POTENTIAL FLAW: Read data from the console */
-            if (fgets(data+dataLen, (int)(100-dataLen), stdin) != NULL)
-            {
-                /* The next few lines remove the carriage return from the string that is
-                 * inserted by fgets() */
-                dataLen = strlen(data);
-                if (dataLen > 0 && data[dataLen-1] == '\n')
-                {
-                    data[dataLen-1] = '\0';
-                }
-            }
-            else
-            {
-                printLine("fgets() failed");
-                /* Restore NUL terminator if fgets fails */
-                data[dataLen] = '\0';
-            }
-        }
+        CWE761_sigriscv_char_console_source(data);
     }
     if(staticFive==5)
     {
-        /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-         * memory block not at the start of the buffer */
-        for (; *data != '\0'; data++)
-        {
-            if (*data == SEARCH_CHAR)
-            {
-                printLine("We have a match!");
-                break;
-            }
-        }
-        free(data);
+    CWE761_sigriscv_char_console_bad_sink(data);
     }
 }
 
@@ -86,29 +56,7 @@ static void goodB2G1()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Read input from the console */
-        size_t dataLen = strlen(data);
-        /* if there is room in data, read into it from the console */
-        if (100-dataLen > 1)
-        {
-            /* POTENTIAL FLAW: Read data from the console */
-            if (fgets(data+dataLen, (int)(100-dataLen), stdin) != NULL)
-            {
-                /* The next few lines remove the carriage return from the string that is
-                 * inserted by fgets() */
-                dataLen = strlen(data);
-                if (dataLen > 0 && data[dataLen-1] == '\n')
-                {
-                    data[dataLen-1] = '\0';
-                }
-            }
-            else
-            {
-                printLine("fgets() failed");
-                /* Restore NUL terminator if fgets fails */
-                data[dataLen] = '\0';
-            }
-        }
+        CWE761_sigriscv_char_console_source(data);
     }
     if(staticFive!=5)
     {
@@ -141,29 +89,7 @@ static void goodB2G2()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Read input from the console */
-        size_t dataLen = strlen(data);
-        /* if there is room in data, read into it from the console */
-        if (100-dataLen > 1)
-        {
-            /* POTENTIAL FLAW: Read data from the console */
-            if (fgets(data+dataLen, (int)(100-dataLen), stdin) != NULL)
-            {
-                /* The next few lines remove the carriage return from the string that is
-                 * inserted by fgets() */
-                dataLen = strlen(data);
-                if (dataLen > 0 && data[dataLen-1] == '\n')
-                {
-                    data[dataLen-1] = '\0';
-                }
-            }
-            else
-            {
-                printLine("fgets() failed");
-                /* Restore NUL terminator if fgets fails */
-                data[dataLen] = '\0';
-            }
-        }
+        CWE761_sigriscv_char_console_source(data);
     }
     if(staticFive==5)
     {

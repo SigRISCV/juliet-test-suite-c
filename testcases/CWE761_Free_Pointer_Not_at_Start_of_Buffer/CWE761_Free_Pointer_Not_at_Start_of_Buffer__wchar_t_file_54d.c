@@ -26,6 +26,8 @@ Template File: source-sinks-54d.tmpl.c
 
 #define SEARCH_CHAR L'S'
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_file_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */

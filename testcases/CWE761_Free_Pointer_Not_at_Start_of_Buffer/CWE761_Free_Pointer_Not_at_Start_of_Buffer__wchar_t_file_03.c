@@ -26,6 +26,8 @@ Template File: source-sinks-03.tmpl.c
 
 #define SEARCH_CHAR L'S'
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_file_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_file_03_bad()
@@ -35,39 +37,11 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_file_03_bad()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Read input from a file */
-        size_t dataLen = wcslen(data);
-        __raw FILE * pFile;
-        /* if there is room in data, attempt to read the input from a file */
-        if (100-dataLen > 1)
-        {
-            pFile = fopen(FILENAME, "r");
-            if (pFile != NULL)
-            {
-                /* POTENTIAL FLAW: Read data from a file */
-                if (fgetws(data+dataLen, (int)(100-dataLen), pFile) == NULL)
-                {
-                    printLine("fgetws() failed");
-                    /* Restore NUL terminator if fgetws fails */
-                    data[dataLen] = L'\0';
-                }
-                fclose(pFile);
-            }
-        }
+        CWE761_sigriscv_wchar_file_source(data, FILENAME);
     }
     if(5==5)
     {
-        /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-         * memory block not at the start of the buffer */
-        for (; *data != L'\0'; data++)
-        {
-            if (*data == SEARCH_CHAR)
-            {
-                printLine("We have a match!");
-                break;
-            }
-        }
-        free(data);
+    CWE761_sigriscv_wchar_file_bad_sink(data);
     }
 }
 
@@ -83,25 +57,7 @@ static void goodB2G1()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Read input from a file */
-        size_t dataLen = wcslen(data);
-        __raw FILE * pFile;
-        /* if there is room in data, attempt to read the input from a file */
-        if (100-dataLen > 1)
-        {
-            pFile = fopen(FILENAME, "r");
-            if (pFile != NULL)
-            {
-                /* POTENTIAL FLAW: Read data from a file */
-                if (fgetws(data+dataLen, (int)(100-dataLen), pFile) == NULL)
-                {
-                    printLine("fgetws() failed");
-                    /* Restore NUL terminator if fgetws fails */
-                    data[dataLen] = L'\0';
-                }
-                fclose(pFile);
-            }
-        }
+        CWE761_sigriscv_wchar_file_source(data, FILENAME);
     }
     if(5!=5)
     {
@@ -134,25 +90,7 @@ static void goodB2G2()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Read input from a file */
-        size_t dataLen = wcslen(data);
-        __raw FILE * pFile;
-        /* if there is room in data, attempt to read the input from a file */
-        if (100-dataLen > 1)
-        {
-            pFile = fopen(FILENAME, "r");
-            if (pFile != NULL)
-            {
-                /* POTENTIAL FLAW: Read data from a file */
-                if (fgetws(data+dataLen, (int)(100-dataLen), pFile) == NULL)
-                {
-                    printLine("fgetws() failed");
-                    /* Restore NUL terminator if fgetws fails */
-                    data[dataLen] = L'\0';
-                }
-                fclose(pFile);
-            }
-        }
+        CWE761_sigriscv_wchar_file_source(data, FILENAME);
     }
     if(5==5)
     {

@@ -26,22 +26,14 @@ Template File: source-sinks-63b.tmpl.c
 
 #define SEARCH_CHAR L'S'
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_file_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_file_63b_badSink(wchar_t * * dataPtr)
 {
     wchar_t * data = *dataPtr;
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != L'\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_wchar_file_bad_sink(data);
 }
 
 #endif /* OMITBAD */

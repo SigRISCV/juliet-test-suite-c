@@ -17,6 +17,8 @@ Template File: source-sinks-12.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_environment_helpers.h"
+
 
 #ifdef _WIN32
 #define ENV_VARIABLE L"ADD"
@@ -55,45 +57,15 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_12_bad()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     if(globalReturnsTrueOrFalse())
     {
-        /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-         * memory block not at the start of the buffer */
-        for (; *data != L'\0'; data++)
-        {
-            if (*data == SEARCH_CHAR)
-            {
-                printLine("We have a match!");
-                break;
-            }
-        }
-        free(data);
+        CWE761_sigriscv_wchar_environment_bad_sink(data);
     }
     else
     {
-        {
-            size_t i;
-            /* FIX: Use a loop variable to traverse through the string pointed to by data */
-            for (i=0; i < wcslen(data); i++)
-            {
-                if (data[i] == SEARCH_CHAR)
-                {
-                    printLine("We have a match!");
-                    break;
-                }
-            }
-            free(data);
-        }
+        CWE761_sigriscv_wchar_environment_bad_sink(data);
     }
 }
 
@@ -110,15 +82,7 @@ static void goodB2G()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     if(globalReturnsTrueOrFalse())
     {

@@ -18,6 +18,8 @@ Template File: source-sinks-68b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_console_helpers.h"
+
 #define SEARCH_CHAR L'S'
 
 extern wchar_t * CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_68_badDataForBadSink;
@@ -29,17 +31,7 @@ extern wchar_t * CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_68_
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_68b_badSink()
 {
     wchar_t * data = CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_68_badDataForBadSink;
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != L'\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_wchar_console_bad_sink(data);
 }
 
 #endif /* OMITBAD */

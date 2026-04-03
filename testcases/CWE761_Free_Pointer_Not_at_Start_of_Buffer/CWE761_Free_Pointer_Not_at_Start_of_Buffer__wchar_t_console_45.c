@@ -18,6 +18,8 @@ Template File: source-sinks-45.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_console_helpers.h"
+
 #define SEARCH_CHAR L'S'
 
 static wchar_t * CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_badData;
@@ -28,17 +30,7 @@ static wchar_t * CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_
 static void badSink()
 {
     wchar_t * data = CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_badData;
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != L'\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_wchar_console_bad_sink(data);
 }
 
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_bad()
@@ -48,29 +40,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_bad()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Read input from the console */
-        size_t dataLen = wcslen(data);
-        /* if there is room in data, read into it from the console */
-        if (100-dataLen > 1)
-        {
-            /* POTENTIAL FLAW: Read data from the console */
-            if (fgetws(data+dataLen, (int)(100-dataLen), stdin) != NULL)
-            {
-                /* The next few lines remove the carriage return from the string that is
-                 * inserted by fgetws() */
-                dataLen = wcslen(data);
-                if (dataLen > 0 && data[dataLen-1] == L'\n')
-                {
-                    data[dataLen-1] = L'\0';
-                }
-            }
-            else
-            {
-                printLine("fgetws() failed");
-                /* Restore NUL terminator if fgetws fails */
-                data[dataLen] = L'\0';
-            }
-        }
+        CWE761_sigriscv_wchar_console_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_badData = data;
     badSink();
@@ -106,29 +76,7 @@ static void goodB2G()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     {
-        /* Read input from the console */
-        size_t dataLen = wcslen(data);
-        /* if there is room in data, read into it from the console */
-        if (100-dataLen > 1)
-        {
-            /* POTENTIAL FLAW: Read data from the console */
-            if (fgetws(data+dataLen, (int)(100-dataLen), stdin) != NULL)
-            {
-                /* The next few lines remove the carriage return from the string that is
-                 * inserted by fgetws() */
-                dataLen = wcslen(data);
-                if (dataLen > 0 && data[dataLen-1] == L'\n')
-                {
-                    data[dataLen-1] = L'\0';
-                }
-            }
-            else
-            {
-                printLine("fgetws() failed");
-                /* Restore NUL terminator if fgetws fails */
-                data[dataLen] = L'\0';
-            }
-        }
+        CWE761_sigriscv_wchar_console_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_console_45_goodB2GData = data;
     goodB2GSink();

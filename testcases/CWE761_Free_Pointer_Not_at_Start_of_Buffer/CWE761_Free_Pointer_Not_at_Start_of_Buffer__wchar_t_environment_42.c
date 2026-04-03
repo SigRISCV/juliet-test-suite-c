@@ -17,6 +17,8 @@ Template File: source-sinks-42.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_environment_helpers.h"
+
 
 #ifdef _WIN32
 #define ENV_VARIABLE L"ADD"
@@ -51,15 +53,7 @@ static wchar_t *sigriscv_wchar_getenv(__raw const char *name)
 static wchar_t * badSource(wchar_t * data)
 {
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     return data;
 }
@@ -71,17 +65,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_42_bad()
     if (data == NULL) {exit(-1);}
     data[0] = L'\0';
     data = badSource(data);
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != L'\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_wchar_environment_bad_sink(data);
 }
 
 #endif /* OMITBAD */
@@ -91,15 +75,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_environment_42_bad()
 static wchar_t * goodB2GSource(wchar_t * data)
 {
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = wcslen(data);
-        wchar_t * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            wcsncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_wchar_environment_source(data);
     }
     return data;
 }

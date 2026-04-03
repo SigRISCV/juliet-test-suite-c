@@ -17,8 +17,10 @@ Template File: source-sinks-01.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_fixed_string_helpers.h"
 
-#define BAD_SOURCE_FIXED_STRING L"Fixed String" /* MAINTENANCE NOTE: This string must contain the SEARCH_CHAR */
+
+#define BAD_SOURCE_FIXED_STRING CWE761_SIGRISCV_WCHAR_FIXED_STRING /* MAINTENANCE NOTE: SEARCH_CHAR is at an aligned offset */
 
 #define SEARCH_CHAR L'S'
 
@@ -32,17 +34,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_fixed_string_01_bad()
     data[0] = L'\0';
     /* POTENTIAL FLAW: Initialize data to be a fixed string that contains the search character in the sinks */
     wcscpy(data, BAD_SOURCE_FIXED_STRING);
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != L'\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_wchar_fixed_bad_sink(data);
 }
 
 #endif /* OMITBAD */

@@ -18,6 +18,8 @@ Template File: source-sinks-63b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_console_helpers.h"
+
 #define SEARCH_CHAR 'S'
 
 #ifndef OMITBAD
@@ -25,17 +27,7 @@ Template File: source-sinks-63b.tmpl.c
 void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_console_63b_badSink(char * * dataPtr)
 {
     char * data = *dataPtr;
-    /* FLAW: We are incrementing the pointer in the loop - this will cause us to free the
-     * memory block not at the start of the buffer */
-    for (; *data != '\0'; data++)
-    {
-        if (*data == SEARCH_CHAR)
-        {
-            printLine("We have a match!");
-            break;
-        }
-    }
-    free(data);
+    CWE761_sigriscv_char_console_bad_sink(data);
 }
 
 #endif /* OMITBAD */

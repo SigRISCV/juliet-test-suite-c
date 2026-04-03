@@ -17,6 +17,8 @@ Template File: source-sinks-68a.tmpl.c
 #include "std_testcase.h"
 
 #include <wchar.h>
+#include "CWE761_Free_Pointer_Not_at_Start_of_Buffer__sigriscv_environment_helpers.h"
+
 
 #define ENV_VARIABLE "ADD"
 
@@ -44,15 +46,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_68_bad()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = strlen(data);
-        char * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            strncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_char_environment_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_68_badDataForBadSink = data;
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_68b_badSink();
@@ -73,15 +67,7 @@ static void goodB2G()
     if (data == NULL) {exit(-1);}
     data[0] = '\0';
     {
-        /* Append input from an environment variable to data */
-        size_t dataLen = strlen(data);
-        char * environment = GETENV(ENV_VARIABLE);
-        /* If there is data in the environment variable */
-        if (environment != NULL)
-        {
-            /* POTENTIAL FLAW: Read data from an environment variable */
-            strncat(data+dataLen, environment, 100-dataLen-1);
-        }
+        CWE761_sigriscv_char_environment_source(data);
     }
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_68_badDataForGoodSink = data;
     CWE761_Free_Pointer_Not_at_Start_of_Buffer__char_environment_68b_goodB2GSink();
