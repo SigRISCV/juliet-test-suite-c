@@ -19,9 +19,11 @@ Template File: sources-sinks-67a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 typedef struct _CWE415_Double_Free__malloc_free_struct_67_structType
 {
-    twoIntsStruct * structFirst;
+    twoIntsStruct ** structFirst;
 } CWE415_Double_Free__malloc_free_struct_67_structType;
 
 #ifndef OMITBAD
@@ -31,14 +33,11 @@ void CWE415_Double_Free__malloc_free_struct_67b_badSink(CWE415_Double_Free__mall
 
 void CWE415_Double_Free__malloc_free_struct_67_bad()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     CWE415_Double_Free__malloc_free_struct_67_structType myStruct;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_badSource();
     myStruct.structFirst = data;
     CWE415_Double_Free__malloc_free_struct_67b_badSink(myStruct);
 }
@@ -52,13 +51,11 @@ void CWE415_Double_Free__malloc_free_struct_67b_goodG2BSink(CWE415_Double_Free__
 
 static void goodG2B()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     CWE415_Double_Free__malloc_free_struct_67_structType myStruct;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_struct_goodG2BSource();
     myStruct.structFirst = data;
     CWE415_Double_Free__malloc_free_struct_67b_goodG2BSink(myStruct);
 }
@@ -68,14 +65,11 @@ void CWE415_Double_Free__malloc_free_struct_67b_goodB2GSink(CWE415_Double_Free__
 
 static void goodB2G()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     CWE415_Double_Free__malloc_free_struct_67_structType myStruct;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_goodB2GSource();
     myStruct.structFirst = data;
     CWE415_Double_Free__malloc_free_struct_67b_goodB2GSink(myStruct);
 }

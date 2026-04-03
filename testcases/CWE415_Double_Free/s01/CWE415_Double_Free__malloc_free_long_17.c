@@ -19,25 +19,23 @@ Template File: sources-sinks-17.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_long_17_bad()
 {
     int i,j;
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     for(i = 0; i < 1; i++)
     {
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_long_badSource();
     }
     for(j = 0; j < 1; j++)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_long_badSink(data);
     }
 }
 
@@ -49,15 +47,12 @@ void CWE415_Double_Free__malloc_free_long_17_bad()
 static void goodB2G()
 {
     int i,k;
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     for(i = 0; i < 1; i++)
     {
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_long_goodB2GSource();
     }
     for(k = 0; k < 1; k++)
     {
@@ -71,19 +66,16 @@ static void goodB2G()
 static void goodG2B()
 {
     int h,j;
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     for(h = 0; h < 1; h++)
     {
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_long_goodG2BSource();
     }
     for(j = 0; j < 1; j++)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
     }
 }
 

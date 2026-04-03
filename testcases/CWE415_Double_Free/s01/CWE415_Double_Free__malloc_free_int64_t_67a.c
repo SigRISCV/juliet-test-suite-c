@@ -19,9 +19,11 @@ Template File: sources-sinks-67a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int64_t_helpers.h"
+
 typedef struct _CWE415_Double_Free__malloc_free_int64_t_67_structType
 {
-    int64_t * structFirst;
+    int64_t ** structFirst;
 } CWE415_Double_Free__malloc_free_int64_t_67_structType;
 
 #ifndef OMITBAD
@@ -31,14 +33,11 @@ void CWE415_Double_Free__malloc_free_int64_t_67b_badSink(CWE415_Double_Free__mal
 
 void CWE415_Double_Free__malloc_free_int64_t_67_bad()
 {
-    int64_t * data;
+    int64_t ** data;
     CWE415_Double_Free__malloc_free_int64_t_67_structType myStruct;
     /* Initialize data */
     data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int64_t_badSource();
     myStruct.structFirst = data;
     CWE415_Double_Free__malloc_free_int64_t_67b_badSink(myStruct);
 }
@@ -52,13 +51,11 @@ void CWE415_Double_Free__malloc_free_int64_t_67b_goodG2BSink(CWE415_Double_Free_
 
 static void goodG2B()
 {
-    int64_t * data;
+    int64_t ** data;
     CWE415_Double_Free__malloc_free_int64_t_67_structType myStruct;
     /* Initialize data */
     data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
     myStruct.structFirst = data;
     CWE415_Double_Free__malloc_free_int64_t_67b_goodG2BSink(myStruct);
 }
@@ -68,14 +65,11 @@ void CWE415_Double_Free__malloc_free_int64_t_67b_goodB2GSink(CWE415_Double_Free_
 
 static void goodB2G()
 {
-    int64_t * data;
+    int64_t ** data;
     CWE415_Double_Free__malloc_free_int64_t_67_structType myStruct;
     /* Initialize data */
     data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
     myStruct.structFirst = data;
     CWE415_Double_Free__malloc_free_int64_t_67b_goodB2GSink(myStruct);
 }

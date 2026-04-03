@@ -19,25 +19,23 @@ Template File: sources-sinks-42.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int_helpers.h"
+
 #ifndef OMITBAD
 
-static int * badSource(int * data)
+static int ** badSource(int ** data)
 {
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_int_badSource();
 }
 
 void CWE415_Double_Free__malloc_free_int_42_bad()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     data = badSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_int_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -45,37 +43,31 @@ void CWE415_Double_Free__malloc_free_int_42_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-static int * goodG2BSource(int * data)
+static int ** goodG2BSource(int ** data)
 {
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_int_goodG2BSource();
 }
 
 static void goodG2B()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     data = goodG2BSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_int_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-static int * goodB2GSource(int * data)
+static int ** goodB2GSource(int ** data)
 {
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_int_goodB2GSource();
 }
 
 static void goodB2G()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     data = goodB2GSource(data);

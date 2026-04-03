@@ -19,12 +19,13 @@ Template File: sources-sinks-65b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
-void CWE415_Double_Free__malloc_free_long_65b_badSink(long * data)
+void CWE415_Double_Free__malloc_free_long_65b_badSink(long ** data)
 {
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_long_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -32,14 +33,13 @@ void CWE415_Double_Free__malloc_free_long_65b_badSink(long * data)
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_long_65b_goodG2BSink(long * data)
+void CWE415_Double_Free__malloc_free_long_65b_goodG2BSink(long ** data)
 {
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_long_65b_goodB2GSink(long * data)
+void CWE415_Double_Free__malloc_free_long_65b_goodB2GSink(long ** data)
 {
     /* do nothing */
     /* FIX: Don't attempt to free the memory */

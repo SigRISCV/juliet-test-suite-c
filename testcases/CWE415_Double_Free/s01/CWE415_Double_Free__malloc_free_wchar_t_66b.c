@@ -19,14 +19,15 @@ Template File: sources-sinks-66b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_wchar_t_helpers.h"
+
 #ifndef OMITBAD
 
-void CWE415_Double_Free__malloc_free_wchar_t_66b_badSink(wchar_t * dataArray[])
+void CWE415_Double_Free__malloc_free_wchar_t_66b_badSink(wchar_t ** dataArray[])
 {
     /* copy data out of dataArray */
-    wchar_t * data = dataArray[2];
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    wchar_t ** data = dataArray[2];
+    CWE415_Double_Free_sigriscv_wchar_t_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -34,17 +35,16 @@ void CWE415_Double_Free__malloc_free_wchar_t_66b_badSink(wchar_t * dataArray[])
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_wchar_t_66b_goodG2BSink(wchar_t * dataArray[])
+void CWE415_Double_Free__malloc_free_wchar_t_66b_goodG2BSink(wchar_t ** dataArray[])
 {
-    wchar_t * data = dataArray[2];
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    wchar_t ** data = dataArray[2];
+    CWE415_Double_Free_sigriscv_wchar_t_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_wchar_t_66b_goodB2GSink(wchar_t * dataArray[])
+void CWE415_Double_Free__malloc_free_wchar_t_66b_goodB2GSink(wchar_t ** dataArray[])
 {
-    wchar_t * data = dataArray[2];
+    wchar_t ** data = dataArray[2];
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */

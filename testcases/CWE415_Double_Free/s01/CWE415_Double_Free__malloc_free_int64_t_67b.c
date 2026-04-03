@@ -19,18 +19,19 @@ Template File: sources-sinks-67b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int64_t_helpers.h"
+
 typedef struct _CWE415_Double_Free__malloc_free_int64_t_67_structType
 {
-    int64_t * structFirst;
+    int64_t ** structFirst;
 } CWE415_Double_Free__malloc_free_int64_t_67_structType;
 
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_int64_t_67b_badSink(CWE415_Double_Free__malloc_free_int64_t_67_structType myStruct)
 {
-    int64_t * data = myStruct.structFirst;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    int64_t ** data = myStruct.structFirst;
+    CWE415_Double_Free_sigriscv_int64_t_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -40,15 +41,14 @@ void CWE415_Double_Free__malloc_free_int64_t_67b_badSink(CWE415_Double_Free__mal
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE415_Double_Free__malloc_free_int64_t_67b_goodG2BSink(CWE415_Double_Free__malloc_free_int64_t_67_structType myStruct)
 {
-    int64_t * data = myStruct.structFirst;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    int64_t ** data = myStruct.structFirst;
+    CWE415_Double_Free_sigriscv_int64_t_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 void CWE415_Double_Free__malloc_free_int64_t_67b_goodB2GSink(CWE415_Double_Free__malloc_free_int64_t_67_structType myStruct)
 {
-    int64_t * data = myStruct.structFirst;
+    int64_t ** data = myStruct.structFirst;
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */

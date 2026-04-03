@@ -19,25 +19,23 @@ Template File: sources-sinks-42.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int64_t_helpers.h"
+
 #ifndef OMITBAD
 
-static int64_t * badSource(int64_t * data)
+static int64_t ** badSource(int64_t ** data)
 {
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_int64_t_badSource();
 }
 
 void CWE415_Double_Free__malloc_free_int64_t_42_bad()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     data = badSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_int64_t_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -45,37 +43,31 @@ void CWE415_Double_Free__malloc_free_int64_t_42_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-static int64_t * goodG2BSource(int64_t * data)
+static int64_t ** goodG2BSource(int64_t ** data)
 {
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
 }
 
 static void goodG2B()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     data = goodG2BSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_int64_t_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-static int64_t * goodB2GSource(int64_t * data)
+static int64_t ** goodB2GSource(int64_t ** data)
 {
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
 }
 
 static void goodB2G()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     data = goodB2GSource(data);

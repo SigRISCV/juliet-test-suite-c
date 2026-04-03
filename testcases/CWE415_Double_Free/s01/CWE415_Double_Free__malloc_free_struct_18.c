@@ -19,23 +19,21 @@ Template File: sources-sinks-18.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_struct_18_bad()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* Initialize data */
     data = NULL;
     goto source;
 source:
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_badSource();
     goto sink;
 sink:
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_struct_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -45,15 +43,12 @@ sink:
 /* goodB2G() - use badsource and goodsink by reversing the blocks on the second goto statement */
 static void goodB2G()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* Initialize data */
     data = NULL;
     goto source;
 source:
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_goodB2GSource();
     goto sink;
 sink:
     /* do nothing */
@@ -64,18 +59,15 @@ sink:
 /* goodG2B() - use goodsource and badsink by reversing the blocks on the first goto statement */
 static void goodG2B()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* Initialize data */
     data = NULL;
     goto source;
 source:
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_struct_goodG2BSource();
     goto sink;
 sink:
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_struct_goodG2BSink(data);
 }
 
 void CWE415_Double_Free__malloc_free_struct_18_good()

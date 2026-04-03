@@ -19,25 +19,23 @@ Template File: sources-sinks-16.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_wchar_t_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_wchar_t_16_bad()
 {
-    wchar_t * data;
+    wchar_t ** data;
     /* Initialize data */
     data = NULL;
     while(1)
     {
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_wchar_t_badSource();
         break;
     }
     while(1)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_wchar_t_badSink(data);
         break;
     }
 }
@@ -49,15 +47,12 @@ void CWE415_Double_Free__malloc_free_wchar_t_16_bad()
 /* goodB2G() - use badsource and goodsink by changing the sinks in the second while statement */
 static void goodB2G()
 {
-    wchar_t * data;
+    wchar_t ** data;
     /* Initialize data */
     data = NULL;
     while(1)
     {
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_wchar_t_goodB2GSource();
         break;
     }
     while(1)
@@ -72,20 +67,17 @@ static void goodB2G()
 /* goodG2B() - use goodsource and badsink by changing the sources in the first while statement */
 static void goodG2B()
 {
-    wchar_t * data;
+    wchar_t ** data;
     /* Initialize data */
     data = NULL;
     while(1)
     {
-        data = (wchar_t *)malloc(100*sizeof(wchar_t));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_wchar_t_goodG2BSource();
         break;
     }
     while(1)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_wchar_t_goodG2BSink(data);
         break;
     }
 }

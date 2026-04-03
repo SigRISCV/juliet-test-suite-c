@@ -19,29 +19,27 @@ Template File: sources-sinks-34.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 typedef union
 {
-    char * unionFirst;
-    char * unionSecond;
+    char ** unionFirst;
+    char ** unionSecond;
 } CWE415_Double_Free__malloc_free_char_34_unionType;
 
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_char_34_bad()
 {
-    char * data;
+    char ** data;
     CWE415_Double_Free__malloc_free_char_34_unionType myUnion;
     /* Initialize data */
     data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_char_badSource();
     myUnion.unionFirst = data;
     {
-        char * data = myUnion.unionSecond;
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        char ** data = myUnion.unionSecond;
+        CWE415_Double_Free_sigriscv_char_badSink(data);
     }
 }
 
@@ -52,35 +50,29 @@ void CWE415_Double_Free__malloc_free_char_34_bad()
 /* goodG2B() uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    char * data;
+    char ** data;
     CWE415_Double_Free__malloc_free_char_34_unionType myUnion;
     /* Initialize data */
     data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_char_goodG2BSource();
     myUnion.unionFirst = data;
     {
-        char * data = myUnion.unionSecond;
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        char ** data = myUnion.unionSecond;
+        CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
     }
 }
 
 /* goodB2G() uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    char * data;
+    char ** data;
     CWE415_Double_Free__malloc_free_char_34_unionType myUnion;
     /* Initialize data */
     data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_char_goodB2GSource();
     myUnion.unionFirst = data;
     {
-        char * data = myUnion.unionSecond;
+        char ** data = myUnion.unionSecond;
         /* do nothing */
         /* FIX: Don't attempt to free the memory */
         ; /* empty statement needed for some flow variants */

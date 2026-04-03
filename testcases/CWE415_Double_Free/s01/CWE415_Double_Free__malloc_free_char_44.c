@@ -19,25 +19,23 @@ Template File: sources-sinks-44.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 #ifndef OMITBAD
 
-static void badSink(char * data)
+static void badSink(char ** data)
 {
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_char_badSink(data);
 }
 
 void CWE415_Double_Free__malloc_free_char_44_bad()
 {
-    char * data;
+    char ** data;
     /* define a function pointer */
-    void (*funcPtr) (char *) = badSink;
+    void (*funcPtr) (char **) = badSink;
     /* Initialize data */
     data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_char_badSource();
     /* use the function pointer */
     funcPtr(data);
 }
@@ -47,26 +45,23 @@ void CWE415_Double_Free__malloc_free_char_44_bad()
 #ifndef OMITGOOD
 
 /* goodG2B() uses the GoodSource with the BadSink */
-static void goodG2BSink(char * data)
+static void goodG2BSink(char ** data)
 {
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
 }
 
 static void goodG2B()
 {
-    char * data;
-    void (*funcPtr) (char *) = goodG2BSink;
+    char ** data;
+    void (*funcPtr) (char **) = goodG2BSink;
     /* Initialize data */
     data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_char_goodG2BSource();
     funcPtr(data);
 }
 
 /* goodB2G() uses the BadSource with the GoodSink */
-static void goodB2GSink(char * data)
+static void goodB2GSink(char ** data)
 {
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
@@ -75,14 +70,11 @@ static void goodB2GSink(char * data)
 
 static void goodB2G()
 {
-    char * data;
-    void (*funcPtr) (char *) = goodB2GSink;
+    char ** data;
+    void (*funcPtr) (char **) = goodB2GSink;
     /* Initialize data */
     data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_char_goodB2GSource();
     funcPtr(data);
 }
 

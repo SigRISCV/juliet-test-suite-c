@@ -19,36 +19,30 @@ Template File: sources-sinks-12.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int64_t_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_int64_t_12_bad()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(globalReturnsTrueOrFalse())
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int64_t_badSource();
     }
     else
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int64_t_badSource();
     }
     if(globalReturnsTrueOrFalse())
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int64_t_badSink(data);
     }
     else
     {
-        /* do nothing */
-        /* FIX: Don't attempt to free the memory */
-        ; /* empty statement needed for some flow variants */
+        CWE415_Double_Free_sigriscv_int64_t_badSink(data);
     }
 }
 
@@ -61,22 +55,16 @@ void CWE415_Double_Free__malloc_free_int64_t_12_bad()
    use the GoodSink */
 static void goodB2G()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(globalReturnsTrueOrFalse())
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
     }
     else
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
     }
     if(globalReturnsTrueOrFalse())
     {
@@ -97,30 +85,24 @@ static void goodB2G()
    use the BadSink */
 static void goodG2B()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(globalReturnsTrueOrFalse())
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
     }
     else
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
     }
     if(globalReturnsTrueOrFalse())
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int64_t_goodG2BSink(data);
     }
     else
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int64_t_goodG2BSink(data);
     }
 }
 

@@ -23,15 +23,32 @@ Template File: sources-sinks-01.tmpl.c
 
 void CWE415_Double_Free__malloc_free_char_01_bad()
 {
-    char * data;
+    char **slot1;
+    char **slot2;
+    char **slot3;
+    char *inner;
     /* Initialize data */
-    data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    slot1 = NULL;
+    slot2 = NULL;
+    slot3 = NULL;
+    inner = NULL;
+    slot1 = (char **)malloc(sizeof(char *));
+    if (slot1 == NULL) {exit(-1);}
+    inner = (char *)malloc(100*sizeof(char));
+    if (inner == NULL) {exit(-1);}
+    memset(inner, 'A', 100-1);
+    inner[100-1] = '\0';
+    /* POTENTIAL FLAW: Double free the same slot so allocator may hand it out twice */
+    free((__raw void *)slot1);
+    free((__raw void *)slot1);
+    slot2 = (char **)malloc(sizeof(char *));
+    if (slot2 == NULL) {exit(-1);}
+    slot3 = (char **)malloc(sizeof(char *));
+    if (slot3 == NULL) {exit(-1);}
+    *slot3 = inner;
+    /* POTENTIAL FLAW: If double free aliases slot2/slot3 to the same raw address,
+     * *slot2 performs ls with a different safe ID than the prior ss(*slot3). */
+    printLine(*slot2);
 }
 
 #endif /* OMITBAD */
@@ -41,28 +58,42 @@ void CWE415_Double_Free__malloc_free_char_01_bad()
 /* goodG2B uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    char * data;
+    char **slot1;
+    char *inner;
     /* Initialize data */
-    data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    slot1 = NULL;
+    inner = NULL;
+    slot1 = (char **)malloc(sizeof(char *));
+    if (slot1 == NULL) {exit(-1);}
+    inner = (char *)malloc(100*sizeof(char));
+    if (inner == NULL) {exit(-1);}
+    memset(inner, 'A', 100-1);
+    inner[100-1] = '\0';
+    *slot1 = inner;
+    /* FIX: No double free, no overlapping aliases */
+    printLine(*slot1);
+    free((__raw void *)slot1);
+    free(inner);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    char * data;
+    char **slot1;
+    char *inner;
     /* Initialize data */
-    data = NULL;
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    /* do nothing */
-    /* FIX: Don't attempt to free the memory */
+    slot1 = NULL;
+    inner = NULL;
+    slot1 = (char **)malloc(sizeof(char *));
+    if (slot1 == NULL) {exit(-1);}
+    inner = (char *)malloc(100*sizeof(char));
+    if (inner == NULL) {exit(-1);}
+    memset(inner, 'A', 100-1);
+    inner[100-1] = '\0';
+    *slot1 = inner;
+    /* FIX: Only free once, and do not create a second alias */
+    free((__raw void *)slot1);
+    free(inner);
     ; /* empty statement needed for some flow variants */
 }
 

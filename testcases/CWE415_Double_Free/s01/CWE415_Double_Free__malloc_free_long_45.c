@@ -19,28 +19,26 @@ Template File: sources-sinks-45.tmpl.c
 
 #include <wchar.h>
 
-static long * CWE415_Double_Free__malloc_free_long_45_badData;
-static long * CWE415_Double_Free__malloc_free_long_45_goodG2BData;
-static long * CWE415_Double_Free__malloc_free_long_45_goodB2GData;
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
+static long ** CWE415_Double_Free__malloc_free_long_45_badData;
+static long ** CWE415_Double_Free__malloc_free_long_45_goodG2BData;
+static long ** CWE415_Double_Free__malloc_free_long_45_goodB2GData;
 
 #ifndef OMITBAD
 
 static void badSink()
 {
-    long * data = CWE415_Double_Free__malloc_free_long_45_badData;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    long ** data = CWE415_Double_Free__malloc_free_long_45_badData;
+    CWE415_Double_Free_sigriscv_long_badSink(data);
 }
 
 void CWE415_Double_Free__malloc_free_long_45_bad()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_long_badSource();
     CWE415_Double_Free__malloc_free_long_45_badData = data;
     badSink();
 }
@@ -52,19 +50,16 @@ void CWE415_Double_Free__malloc_free_long_45_bad()
 /* goodG2B() uses the GoodSource with the BadSink */
 static void goodG2BSink()
 {
-    long * data = CWE415_Double_Free__malloc_free_long_45_goodG2BData;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    long ** data = CWE415_Double_Free__malloc_free_long_45_goodG2BData;
+    CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
 }
 
 static void goodG2B()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_long_goodG2BSource();
     CWE415_Double_Free__malloc_free_long_45_goodG2BData = data;
     goodG2BSink();
 }
@@ -72,7 +67,7 @@ static void goodG2B()
 /* goodB2G() uses the BadSource with the GoodSink */
 static void goodB2GSink()
 {
-    long * data = CWE415_Double_Free__malloc_free_long_45_goodB2GData;
+    long ** data = CWE415_Double_Free__malloc_free_long_45_goodB2GData;
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */
@@ -80,13 +75,10 @@ static void goodB2GSink()
 
 static void goodB2G()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_long_goodB2GSource();
     CWE415_Double_Free__malloc_free_long_45_goodB2GData = data;
     goodB2GSink();
 }

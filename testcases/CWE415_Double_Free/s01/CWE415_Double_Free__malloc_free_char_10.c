@@ -19,24 +19,22 @@ Template File: sources-sinks-10.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_char_10_bad()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalTrue)
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_char_badSource();
     }
     if(globalTrue)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_badSink(data);
     }
 }
 
@@ -47,15 +45,12 @@ void CWE415_Double_Free__malloc_free_char_10_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second globalTrue to globalFalse */
 static void goodB2G1()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalTrue)
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_char_goodB2GSource();
     }
     if(globalFalse)
     {
@@ -73,15 +68,12 @@ static void goodB2G1()
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second if */
 static void goodB2G2()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalTrue)
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_char_goodB2GSource();
     }
     if(globalTrue)
     {
@@ -94,7 +86,7 @@ static void goodB2G2()
 /* goodG2B1() - use goodsource and badsink by changing the first globalTrue to globalFalse */
 static void goodG2B1()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalFalse)
@@ -104,33 +96,27 @@ static void goodG2B1()
     }
     else
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_char_goodG2BSource();
     }
     if(globalTrue)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
     }
 }
 
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first if */
 static void goodG2B2()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalTrue)
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_char_goodG2BSource();
     }
     if(globalTrue)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
     }
 }
 

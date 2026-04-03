@@ -19,19 +19,20 @@ Template File: sources-sinks-61a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
-twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_badSource(twoIntsStruct * data);
+twoIntsStruct ** CWE415_Double_Free__malloc_free_struct_61b_badSource(twoIntsStruct ** data);
 
 void CWE415_Double_Free__malloc_free_struct_61_bad()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* Initialize data */
     data = NULL;
     data = CWE415_Double_Free__malloc_free_struct_61b_badSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_struct_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -39,24 +40,23 @@ void CWE415_Double_Free__malloc_free_struct_61_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_goodG2BSource(twoIntsStruct * data);
+twoIntsStruct ** CWE415_Double_Free__malloc_free_struct_61b_goodG2BSource(twoIntsStruct ** data);
 
 static void goodG2B()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* Initialize data */
     data = NULL;
     data = CWE415_Double_Free__malloc_free_struct_61b_goodG2BSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_struct_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_goodB2GSource(twoIntsStruct * data);
+twoIntsStruct ** CWE415_Double_Free__malloc_free_struct_61b_goodB2GSource(twoIntsStruct ** data);
 
 static void goodB2G()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* Initialize data */
     data = NULL;
     data = CWE415_Double_Free__malloc_free_struct_61b_goodB2GSource(data);

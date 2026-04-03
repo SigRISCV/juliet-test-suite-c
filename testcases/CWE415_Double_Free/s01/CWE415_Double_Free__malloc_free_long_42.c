@@ -19,25 +19,23 @@ Template File: sources-sinks-42.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
-static long * badSource(long * data)
+static long ** badSource(long ** data)
 {
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_long_badSource();
 }
 
 void CWE415_Double_Free__malloc_free_long_42_bad()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     data = badSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_long_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -45,37 +43,31 @@ void CWE415_Double_Free__malloc_free_long_42_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-static long * goodG2BSource(long * data)
+static long ** goodG2BSource(long ** data)
 {
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_long_goodG2BSource();
 }
 
 static void goodG2B()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     data = goodG2BSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-static long * goodB2GSource(long * data)
+static long ** goodB2GSource(long ** data)
 {
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_long_goodB2GSource();
 }
 
 static void goodB2G()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     data = goodB2GSource(data);

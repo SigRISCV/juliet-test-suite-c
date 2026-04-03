@@ -19,21 +19,20 @@ Template File: sources-sinks-66a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_wchar_t_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
-void CWE415_Double_Free__malloc_free_wchar_t_66b_badSink(wchar_t * dataArray[]);
+void CWE415_Double_Free__malloc_free_wchar_t_66b_badSink(wchar_t ** dataArray[]);
 
 void CWE415_Double_Free__malloc_free_wchar_t_66_bad()
 {
-    wchar_t * data;
-    wchar_t * dataArray[5];
+    wchar_t ** data;
+    wchar_t ** dataArray[5];
     /* Initialize data */
     data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_wchar_t_badSource();
     /* put data in array */
     dataArray[2] = data;
     CWE415_Double_Free__malloc_free_wchar_t_66b_badSink(dataArray);
@@ -44,34 +43,29 @@ void CWE415_Double_Free__malloc_free_wchar_t_66_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_wchar_t_66b_goodG2BSink(wchar_t * dataArray[]);
+void CWE415_Double_Free__malloc_free_wchar_t_66b_goodG2BSink(wchar_t ** dataArray[]);
 
 static void goodG2B()
 {
-    wchar_t * data;
-    wchar_t * dataArray[5];
+    wchar_t ** data;
+    wchar_t ** dataArray[5];
     /* Initialize data */
     data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_wchar_t_goodG2BSource();
     dataArray[2] = data;
     CWE415_Double_Free__malloc_free_wchar_t_66b_goodG2BSink(dataArray);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_wchar_t_66b_goodB2GSink(wchar_t * dataArray[]);
+void CWE415_Double_Free__malloc_free_wchar_t_66b_goodB2GSink(wchar_t ** dataArray[]);
 
 static void goodB2G()
 {
-    wchar_t * data;
-    wchar_t * dataArray[5];
+    wchar_t ** data;
+    wchar_t ** dataArray[5];
     /* Initialize data */
     data = NULL;
-    data = (wchar_t *)malloc(100*sizeof(wchar_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_wchar_t_goodB2GSource();
     dataArray[2] = data;
     CWE415_Double_Free__malloc_free_wchar_t_66b_goodB2GSink(dataArray);
 }

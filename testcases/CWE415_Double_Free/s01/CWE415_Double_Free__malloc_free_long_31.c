@@ -19,22 +19,20 @@ Template File: sources-sinks-31.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_long_31_bad()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_long_badSource();
     {
-        long * dataCopy = data;
-        long * data = dataCopy;
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        long ** dataCopy = data;
+        long ** data = dataCopy;
+        CWE415_Double_Free_sigriscv_long_badSink(data);
     }
 }
 
@@ -45,33 +43,27 @@ void CWE415_Double_Free__malloc_free_long_31_bad()
 /* goodG2B() uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_long_goodG2BSource();
     {
-        long * dataCopy = data;
-        long * data = dataCopy;
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        long ** dataCopy = data;
+        long ** data = dataCopy;
+        CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
     }
 }
 
 /* goodB2G() uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_long_goodB2GSource();
     {
-        long * dataCopy = data;
-        long * data = dataCopy;
+        long ** dataCopy = data;
+        long ** data = dataCopy;
         /* do nothing */
         /* FIX: Don't attempt to free the memory */
         ; /* empty statement needed for some flow variants */

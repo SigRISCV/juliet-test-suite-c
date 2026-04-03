@@ -19,9 +19,11 @@ Template File: sources-sinks-68a.tmpl.c
 
 #include <wchar.h>
 
-int64_t * CWE415_Double_Free__malloc_free_int64_t_68_badData;
-int64_t * CWE415_Double_Free__malloc_free_int64_t_68_goodG2BData;
-int64_t * CWE415_Double_Free__malloc_free_int64_t_68_goodB2GData;
+#include "CWE415_Double_Free__sigriscv_int64_t_helpers.h"
+
+int64_t ** CWE415_Double_Free__malloc_free_int64_t_68_badData;
+int64_t ** CWE415_Double_Free__malloc_free_int64_t_68_goodG2BData;
+int64_t ** CWE415_Double_Free__malloc_free_int64_t_68_goodB2GData;
 
 #ifndef OMITBAD
 
@@ -30,13 +32,10 @@ void CWE415_Double_Free__malloc_free_int64_t_68b_badSink();
 
 void CWE415_Double_Free__malloc_free_int64_t_68_bad()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int64_t_badSource();
     CWE415_Double_Free__malloc_free_int64_t_68_badData = data;
     CWE415_Double_Free__malloc_free_int64_t_68b_badSink();
 }
@@ -52,12 +51,10 @@ void CWE415_Double_Free__malloc_free_int64_t_68b_goodB2GSink();
 /* goodG2B uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
     CWE415_Double_Free__malloc_free_int64_t_68_goodG2BData = data;
     CWE415_Double_Free__malloc_free_int64_t_68b_goodG2BSink();
 }
@@ -65,13 +62,10 @@ static void goodG2B()
 /* goodB2G uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
-    data = (int64_t *)malloc(100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
     CWE415_Double_Free__malloc_free_int64_t_68_goodB2GData = data;
     CWE415_Double_Free__malloc_free_int64_t_68b_goodB2GSink();
 }

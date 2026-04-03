@@ -19,13 +19,14 @@ Template File: sources-sinks-63b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 #ifndef OMITBAD
 
-void CWE415_Double_Free__malloc_free_char_63b_badSink(char * * dataPtr)
+void CWE415_Double_Free__malloc_free_char_63b_badSink(char ** * dataPtr)
 {
-    char * data = *dataPtr;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    char ** data = *dataPtr;
+    CWE415_Double_Free_sigriscv_char_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -33,17 +34,16 @@ void CWE415_Double_Free__malloc_free_char_63b_badSink(char * * dataPtr)
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_char_63b_goodG2BSink(char * * dataPtr)
+void CWE415_Double_Free__malloc_free_char_63b_goodG2BSink(char ** * dataPtr)
 {
-    char * data = *dataPtr;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    char ** data = *dataPtr;
+    CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_char_63b_goodB2GSink(char * * dataPtr)
+void CWE415_Double_Free__malloc_free_char_63b_goodB2GSink(char ** * dataPtr)
 {
-    char * data = *dataPtr;
+    char ** data = *dataPtr;
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */

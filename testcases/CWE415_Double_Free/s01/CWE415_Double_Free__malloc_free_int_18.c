@@ -19,23 +19,21 @@ Template File: sources-sinks-18.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_int_18_bad()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     goto source;
 source:
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_badSource();
     goto sink;
 sink:
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_int_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -45,15 +43,12 @@ sink:
 /* goodB2G() - use badsource and goodsink by reversing the blocks on the second goto statement */
 static void goodB2G()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     goto source;
 source:
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_goodB2GSource();
     goto sink;
 sink:
     /* do nothing */
@@ -64,18 +59,15 @@ sink:
 /* goodG2B() - use goodsource and badsink by reversing the blocks on the first goto statement */
 static void goodG2B()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     goto source;
 source:
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_int_goodG2BSource();
     goto sink;
 sink:
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_int_goodG2BSink(data);
 }
 
 void CWE415_Double_Free__malloc_free_int_18_good()

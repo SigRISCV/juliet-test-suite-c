@@ -19,12 +19,14 @@ Template File: sources-sinks-54d.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
-void CWE415_Double_Free__malloc_free_long_54e_badSink(long * data);
+void CWE415_Double_Free__malloc_free_long_54e_badSink(long ** data);
 
-void CWE415_Double_Free__malloc_free_long_54d_badSink(long * data)
+void CWE415_Double_Free__malloc_free_long_54d_badSink(long ** data)
 {
     CWE415_Double_Free__malloc_free_long_54e_badSink(data);
 }
@@ -34,17 +36,17 @@ void CWE415_Double_Free__malloc_free_long_54d_badSink(long * data)
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_long_54e_goodG2BSink(long * data);
+void CWE415_Double_Free__malloc_free_long_54e_goodG2BSink(long ** data);
 
-void CWE415_Double_Free__malloc_free_long_54d_goodG2BSink(long * data)
+void CWE415_Double_Free__malloc_free_long_54d_goodG2BSink(long ** data)
 {
     CWE415_Double_Free__malloc_free_long_54e_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_long_54e_goodB2GSink(long * data);
+void CWE415_Double_Free__malloc_free_long_54e_goodB2GSink(long ** data);
 
-void CWE415_Double_Free__malloc_free_long_54d_goodB2GSink(long * data)
+void CWE415_Double_Free__malloc_free_long_54d_goodB2GSink(long ** data)
 {
     CWE415_Double_Free__malloc_free_long_54e_goodB2GSink(data);
 }

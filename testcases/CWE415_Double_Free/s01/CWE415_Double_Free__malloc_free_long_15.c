@@ -19,20 +19,19 @@ Template File: sources-sinks-15.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_long_15_bad()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     switch(6)
     {
     case 6:
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_long_badSource();
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -42,8 +41,7 @@ void CWE415_Double_Free__malloc_free_long_15_bad()
     switch(7)
     {
     case 7:
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_long_badSink(data);
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -59,16 +57,13 @@ void CWE415_Double_Free__malloc_free_long_15_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second switch to switch(8) */
 static void goodB2G1()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     switch(6)
     {
     case 6:
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_long_goodB2GSource();
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -92,16 +87,13 @@ static void goodB2G1()
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second switch */
 static void goodB2G2()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     switch(6)
     {
     case 6:
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_long_goodB2GSource();
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -125,7 +117,7 @@ static void goodB2G2()
 /* goodG2B1() - use goodsource and badsink by changing the first switch to switch(5) */
 static void goodG2B1()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     switch(5)
@@ -135,16 +127,13 @@ static void goodG2B1()
         printLine("Benign, fixed string");
         break;
     default:
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_long_goodG2BSource();
         break;
     }
     switch(7)
     {
     case 7:
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -156,15 +145,13 @@ static void goodG2B1()
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first switch */
 static void goodG2B2()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     switch(6)
     {
     case 6:
-        data = (long *)malloc(100*sizeof(long));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_long_goodG2BSource();
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */
@@ -174,8 +161,7 @@ static void goodG2B2()
     switch(7)
     {
     case 7:
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
         break;
     default:
         /* INCIDENTAL: CWE 561 Dead Code, the code below will never run */

@@ -19,20 +19,19 @@ Template File: sources-sinks-54a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
-void CWE415_Double_Free__malloc_free_int_54b_badSink(int * data);
+void CWE415_Double_Free__malloc_free_int_54b_badSink(int ** data);
 
 void CWE415_Double_Free__malloc_free_int_54_bad()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_badSource();
     CWE415_Double_Free__malloc_free_int_54b_badSink(data);
 }
 
@@ -41,31 +40,26 @@ void CWE415_Double_Free__malloc_free_int_54_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_int_54b_goodG2BSink(int * data);
+void CWE415_Double_Free__malloc_free_int_54b_goodG2BSink(int ** data);
 
 static void goodG2B()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_int_goodG2BSource();
     CWE415_Double_Free__malloc_free_int_54b_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_int_54b_goodB2GSink(int * data);
+void CWE415_Double_Free__malloc_free_int_54b_goodB2GSink(int ** data);
 
 static void goodB2G()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_goodB2GSource();
     CWE415_Double_Free__malloc_free_int_54b_goodB2GSink(data);
 }
 

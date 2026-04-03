@@ -19,29 +19,27 @@ Template File: sources-sinks-34.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 typedef union
 {
-    twoIntsStruct * unionFirst;
-    twoIntsStruct * unionSecond;
+    twoIntsStruct ** unionFirst;
+    twoIntsStruct ** unionSecond;
 } CWE415_Double_Free__malloc_free_struct_34_unionType;
 
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_struct_34_bad()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     CWE415_Double_Free__malloc_free_struct_34_unionType myUnion;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_badSource();
     myUnion.unionFirst = data;
     {
-        twoIntsStruct * data = myUnion.unionSecond;
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        twoIntsStruct ** data = myUnion.unionSecond;
+        CWE415_Double_Free_sigriscv_struct_badSink(data);
     }
 }
 
@@ -52,35 +50,29 @@ void CWE415_Double_Free__malloc_free_struct_34_bad()
 /* goodG2B() uses the GoodSource with the BadSink */
 static void goodG2B()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     CWE415_Double_Free__malloc_free_struct_34_unionType myUnion;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_struct_goodG2BSource();
     myUnion.unionFirst = data;
     {
-        twoIntsStruct * data = myUnion.unionSecond;
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        twoIntsStruct ** data = myUnion.unionSecond;
+        CWE415_Double_Free_sigriscv_struct_goodG2BSink(data);
     }
 }
 
 /* goodB2G() uses the BadSource with the GoodSink */
 static void goodB2G()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     CWE415_Double_Free__malloc_free_struct_34_unionType myUnion;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_goodB2GSource();
     myUnion.unionFirst = data;
     {
-        twoIntsStruct * data = myUnion.unionSecond;
+        twoIntsStruct ** data = myUnion.unionSecond;
         /* do nothing */
         /* FIX: Don't attempt to free the memory */
         ; /* empty statement needed for some flow variants */

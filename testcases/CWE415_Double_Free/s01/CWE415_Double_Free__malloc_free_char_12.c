@@ -19,30 +19,28 @@ Template File: sources-sinks-12.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_char_12_bad()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalReturnsTrueOrFalse())
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_char_badSource();
     }
     else
     {
-        data = (char *)malloc(100*sizeof(char));
+        data = (char **)malloc(100*sizeof(char));
         if (data == NULL) {exit(-1);}
         /* FIX: Do NOT free data in the source - the bad sink frees data */
     }
     if(globalReturnsTrueOrFalse())
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_badSink(data);
     }
     else
     {
@@ -61,22 +59,16 @@ void CWE415_Double_Free__malloc_free_char_12_bad()
    use the GoodSink */
 static void goodB2G()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalReturnsTrueOrFalse())
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_char_goodB2GSource();
     }
     else
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_char_goodB2GSource();
     }
     if(globalReturnsTrueOrFalse())
     {
@@ -97,30 +89,24 @@ static void goodB2G()
    use the BadSink */
 static void goodG2B()
 {
-    char * data;
+    char ** data;
     /* Initialize data */
     data = NULL;
     if(globalReturnsTrueOrFalse())
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_char_goodG2BSource();
     }
     else
     {
-        data = (char *)malloc(100*sizeof(char));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_char_goodG2BSource();
     }
     if(globalReturnsTrueOrFalse())
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
     }
     else
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
     }
 }
 

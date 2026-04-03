@@ -19,6 +19,8 @@ Template File: sources-sinks-06.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int64_t_helpers.h"
+
 /* The variable below is declared "const", so a tool should be able
    to identify that reads of this will always give its initialized
    value. */
@@ -28,20 +30,16 @@ static const int STATIC_CONST_FIVE = 5;
 
 void CWE415_Double_Free__malloc_free_int64_t_06_bad()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(STATIC_CONST_FIVE==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int64_t_badSource();
     }
     if(STATIC_CONST_FIVE==5)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int64_t_badSink(data);
     }
 }
 
@@ -52,15 +50,12 @@ void CWE415_Double_Free__malloc_free_int64_t_06_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second STATIC_CONST_FIVE==5 to STATIC_CONST_FIVE!=5 */
 static void goodB2G1()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(STATIC_CONST_FIVE==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
     }
     if(STATIC_CONST_FIVE!=5)
     {
@@ -78,15 +73,12 @@ static void goodB2G1()
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second if */
 static void goodB2G2()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(STATIC_CONST_FIVE==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int64_t_goodB2GSource();
     }
     if(STATIC_CONST_FIVE==5)
     {
@@ -99,7 +91,7 @@ static void goodB2G2()
 /* goodG2B1() - use goodsource and badsink by changing the first STATIC_CONST_FIVE==5 to STATIC_CONST_FIVE!=5 */
 static void goodG2B1()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(STATIC_CONST_FIVE!=5)
@@ -109,33 +101,27 @@ static void goodG2B1()
     }
     else
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
     }
     if(STATIC_CONST_FIVE==5)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int64_t_goodG2BSink(data);
     }
 }
 
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first if */
 static void goodG2B2()
 {
-    int64_t * data;
+    int64_t ** data;
     /* Initialize data */
     data = NULL;
     if(STATIC_CONST_FIVE==5)
     {
-        data = (int64_t *)malloc(100*sizeof(int64_t));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int64_t_goodG2BSource();
     }
     if(STATIC_CONST_FIVE==5)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int64_t_goodG2BSink(data);
     }
 }
 

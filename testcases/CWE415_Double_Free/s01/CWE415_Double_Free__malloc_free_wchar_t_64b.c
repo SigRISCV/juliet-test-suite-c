@@ -19,16 +19,17 @@ Template File: sources-sinks-64b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_wchar_t_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_wchar_t_64b_badSink(void * dataVoidPtr)
 {
     /* cast void pointer to a pointer of the appropriate type */
-    wchar_t * * dataPtr = (wchar_t * *)dataVoidPtr;
+    wchar_t ** * dataPtr = (wchar_t ** *)dataVoidPtr;
     /* dereference dataPtr into data */
-    wchar_t * data = (*dataPtr);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    wchar_t ** data = (*dataPtr);
+    CWE415_Double_Free_sigriscv_wchar_t_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -39,20 +40,19 @@ void CWE415_Double_Free__malloc_free_wchar_t_64b_badSink(void * dataVoidPtr)
 void CWE415_Double_Free__malloc_free_wchar_t_64b_goodG2BSink(void * dataVoidPtr)
 {
     /* cast void pointer to a pointer of the appropriate type */
-    wchar_t * * dataPtr = (wchar_t * *)dataVoidPtr;
+    wchar_t ** * dataPtr = (wchar_t ** *)dataVoidPtr;
     /* dereference dataPtr into data */
-    wchar_t * data = (*dataPtr);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    wchar_t ** data = (*dataPtr);
+    CWE415_Double_Free_sigriscv_wchar_t_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 void CWE415_Double_Free__malloc_free_wchar_t_64b_goodB2GSink(void * dataVoidPtr)
 {
     /* cast void pointer to a pointer of the appropriate type */
-    wchar_t * * dataPtr = (wchar_t * *)dataVoidPtr;
+    wchar_t ** * dataPtr = (wchar_t ** *)dataVoidPtr;
     /* dereference dataPtr into data */
-    wchar_t * data = (*dataPtr);
+    wchar_t ** data = (*dataPtr);
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */

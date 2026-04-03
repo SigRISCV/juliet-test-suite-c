@@ -19,17 +19,18 @@ Template File: sources-sinks-22b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 #ifndef OMITBAD
 
 /* The global variable below is used to drive control flow in the sink function */
 extern int CWE415_Double_Free__malloc_free_char_22_badGlobal;
 
-void CWE415_Double_Free__malloc_free_char_22_badSink(char * data)
+void CWE415_Double_Free__malloc_free_char_22_badSink(char ** data)
 {
     if(CWE415_Double_Free__malloc_free_char_22_badGlobal)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_badSink(data);
     }
 }
 
@@ -43,7 +44,7 @@ extern int CWE415_Double_Free__malloc_free_char_22_goodB2G2Global;
 extern int CWE415_Double_Free__malloc_free_char_22_goodG2BGlobal;
 
 /* goodB2G1() - use badsource and goodsink by setting the static variable to false instead of true */
-void CWE415_Double_Free__malloc_free_char_22_goodB2G1Sink(char * data)
+void CWE415_Double_Free__malloc_free_char_22_goodB2G1Sink(char ** data)
 {
     if(CWE415_Double_Free__malloc_free_char_22_goodB2G1Global)
     {
@@ -59,7 +60,7 @@ void CWE415_Double_Free__malloc_free_char_22_goodB2G1Sink(char * data)
 }
 
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the if in the sink function */
-void CWE415_Double_Free__malloc_free_char_22_goodB2G2Sink(char * data)
+void CWE415_Double_Free__malloc_free_char_22_goodB2G2Sink(char ** data)
 {
     if(CWE415_Double_Free__malloc_free_char_22_goodB2G2Global)
     {
@@ -70,12 +71,11 @@ void CWE415_Double_Free__malloc_free_char_22_goodB2G2Sink(char * data)
 }
 
 /* goodG2B() - use goodsource and badsink */
-void CWE415_Double_Free__malloc_free_char_22_goodG2BSink(char * data)
+void CWE415_Double_Free__malloc_free_char_22_goodG2BSink(char ** data)
 {
     if(CWE415_Double_Free__malloc_free_char_22_goodG2BGlobal)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_char_goodG2BSink(data);
     }
 }
 

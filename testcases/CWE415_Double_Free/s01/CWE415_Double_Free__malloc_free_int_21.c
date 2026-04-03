@@ -19,29 +19,27 @@ Template File: sources-sinks-21.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int_helpers.h"
+
 #ifndef OMITBAD
 
 /* The static variable below is used to drive control flow in the sink function */
 static int badStatic = 0;
 
-static void badSink(int * data)
+static void badSink(int ** data)
 {
     if(badStatic)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int_badSink(data);
     }
 }
 
 void CWE415_Double_Free__malloc_free_int_21_bad()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_badSource();
     badStatic = 1; /* true */
     badSink(data);
 }
@@ -56,7 +54,7 @@ static int goodB2G2Static = 0;
 static int goodG2BStatic = 0;
 
 /* goodB2G1() - use badsource and goodsink by setting the static variable to false instead of true */
-static void goodB2G1Sink(int * data)
+static void goodB2G1Sink(int ** data)
 {
     if(goodB2G1Static)
     {
@@ -73,19 +71,16 @@ static void goodB2G1Sink(int * data)
 
 static void goodB2G1()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_goodB2GSource();
     goodB2G1Static = 0; /* false */
     goodB2G1Sink(data);
 }
 
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the if in the sink function */
-static void goodB2G2Sink(int * data)
+static void goodB2G2Sink(int ** data)
 {
     if(goodB2G2Static)
     {
@@ -97,35 +92,29 @@ static void goodB2G2Sink(int * data)
 
 static void goodB2G2()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_int_goodB2GSource();
     goodB2G2Static = 1; /* true */
     goodB2G2Sink(data);
 }
 
 /* goodG2B() - use goodsource and badsink */
-static void goodG2BSink(int * data)
+static void goodG2BSink(int ** data)
 {
     if(goodG2BStatic)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int_goodG2BSink(data);
     }
 }
 
 static void goodG2B()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
-    data = (int *)malloc(100*sizeof(int));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_int_goodG2BSource();
     goodG2BStatic = 1; /* true */
     goodG2BSink(data);
 }

@@ -19,22 +19,21 @@ Template File: sources-sinks-65a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
-void CWE415_Double_Free__malloc_free_struct_65b_badSink(twoIntsStruct * data);
+void CWE415_Double_Free__malloc_free_struct_65b_badSink(twoIntsStruct ** data);
 
 void CWE415_Double_Free__malloc_free_struct_65_bad()
 {
-    twoIntsStruct * data;
+    twoIntsStruct ** data;
     /* define a function pointer */
-    void (*funcPtr) (twoIntsStruct *) = CWE415_Double_Free__malloc_free_struct_65b_badSink;
+    void (*funcPtr) (twoIntsStruct **) = CWE415_Double_Free__malloc_free_struct_65b_badSink;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_badSource();
     /* use the function pointer */
     funcPtr(data);
 }
@@ -44,33 +43,28 @@ void CWE415_Double_Free__malloc_free_struct_65_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_struct_65b_goodG2BSink(twoIntsStruct * data);
+void CWE415_Double_Free__malloc_free_struct_65b_goodG2BSink(twoIntsStruct ** data);
 
 static void goodG2B()
 {
-    twoIntsStruct * data;
-    void (*funcPtr) (twoIntsStruct *) = CWE415_Double_Free__malloc_free_struct_65b_goodG2BSink;
+    twoIntsStruct ** data;
+    void (*funcPtr) (twoIntsStruct **) = CWE415_Double_Free__malloc_free_struct_65b_goodG2BSink;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_struct_goodG2BSource();
     funcPtr(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_struct_65b_goodB2GSink(twoIntsStruct * data);
+void CWE415_Double_Free__malloc_free_struct_65b_goodB2GSink(twoIntsStruct ** data);
 
 static void goodB2G()
 {
-    twoIntsStruct * data;
-    void (*funcPtr) (twoIntsStruct *) = CWE415_Double_Free__malloc_free_struct_65b_goodB2GSink;
+    twoIntsStruct ** data;
+    void (*funcPtr) (twoIntsStruct **) = CWE415_Double_Free__malloc_free_struct_65b_goodB2GSink;
     /* Initialize data */
     data = NULL;
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_struct_goodB2GSource();
     funcPtr(data);
 }
 

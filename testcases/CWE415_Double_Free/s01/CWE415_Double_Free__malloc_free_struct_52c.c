@@ -19,12 +19,13 @@ Template File: sources-sinks-52c.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 #ifndef OMITBAD
 
-void CWE415_Double_Free__malloc_free_struct_52c_badSink(twoIntsStruct * data)
+void CWE415_Double_Free__malloc_free_struct_52c_badSink(twoIntsStruct ** data)
 {
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_struct_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -32,14 +33,13 @@ void CWE415_Double_Free__malloc_free_struct_52c_badSink(twoIntsStruct * data)
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-void CWE415_Double_Free__malloc_free_struct_52c_goodG2BSink(twoIntsStruct * data)
+void CWE415_Double_Free__malloc_free_struct_52c_goodG2BSink(twoIntsStruct ** data)
 {
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_struct_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-void CWE415_Double_Free__malloc_free_struct_52c_goodB2GSink(twoIntsStruct * data)
+void CWE415_Double_Free__malloc_free_struct_52c_goodB2GSink(twoIntsStruct ** data)
 {
     /* do nothing */
     /* FIX: Don't attempt to free the memory */

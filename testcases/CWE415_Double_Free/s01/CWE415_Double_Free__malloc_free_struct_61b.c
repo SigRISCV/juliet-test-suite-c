@@ -19,15 +19,14 @@ Template File: sources-sinks-61b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_struct_helpers.h"
+
 #ifndef OMITBAD
 
-twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_badSource(twoIntsStruct * data)
+twoIntsStruct ** CWE415_Double_Free__malloc_free_struct_61b_badSource(twoIntsStruct ** data)
 {
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_struct_badSource();
 }
 
 #endif /* OMITBAD */
@@ -35,22 +34,17 @@ twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_badSource(twoIntsStru
 #ifndef OMITGOOD
 
 /* goodG2B() uses the GoodSource with the BadSink */
-twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_goodG2BSource(twoIntsStruct * data)
+twoIntsStruct ** CWE415_Double_Free__malloc_free_struct_61b_goodG2BSource(twoIntsStruct ** data)
 {
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_struct_goodG2BSource();
 }
 
 /* goodB2G() uses the BadSource with the GoodSink */
-twoIntsStruct * CWE415_Double_Free__malloc_free_struct_61b_goodB2GSource(twoIntsStruct * data)
+twoIntsStruct ** CWE415_Double_Free__malloc_free_struct_61b_goodB2GSource(twoIntsStruct ** data)
 {
-    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_struct_goodB2GSource();
 }
 
 #endif /* OMITGOOD */

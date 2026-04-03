@@ -19,18 +19,19 @@ Template File: sources-sinks-67b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 typedef struct _CWE415_Double_Free__malloc_free_long_67_structType
 {
-    long * structFirst;
+    long ** structFirst;
 } CWE415_Double_Free__malloc_free_long_67_structType;
 
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_long_67b_badSink(CWE415_Double_Free__malloc_free_long_67_structType myStruct)
 {
-    long * data = myStruct.structFirst;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    long ** data = myStruct.structFirst;
+    CWE415_Double_Free_sigriscv_long_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -40,15 +41,14 @@ void CWE415_Double_Free__malloc_free_long_67b_badSink(CWE415_Double_Free__malloc
 /* goodG2B uses the GoodSource with the BadSink */
 void CWE415_Double_Free__malloc_free_long_67b_goodG2BSink(CWE415_Double_Free__malloc_free_long_67_structType myStruct)
 {
-    long * data = myStruct.structFirst;
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    long ** data = myStruct.structFirst;
+    CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
 void CWE415_Double_Free__malloc_free_long_67b_goodB2GSink(CWE415_Double_Free__malloc_free_long_67_structType myStruct)
 {
-    long * data = myStruct.structFirst;
+    long ** data = myStruct.structFirst;
     /* do nothing */
     /* FIX: Don't attempt to free the memory */
     ; /* empty statement needed for some flow variants */

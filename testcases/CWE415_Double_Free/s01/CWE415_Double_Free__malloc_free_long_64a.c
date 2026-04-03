@@ -19,6 +19,8 @@ Template File: sources-sinks-64a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
@@ -26,13 +28,10 @@ void CWE415_Double_Free__malloc_free_long_64b_badSink(void * dataVoidPtr);
 
 void CWE415_Double_Free__malloc_free_long_64_bad()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_long_badSource();
     CWE415_Double_Free__malloc_free_long_64b_badSink((void *)&data);
 }
 
@@ -45,12 +44,10 @@ void CWE415_Double_Free__malloc_free_long_64b_goodG2BSink(void * dataVoidPtr);
 
 static void goodG2B()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
+    data = CWE415_Double_Free_sigriscv_long_goodG2BSource();
     CWE415_Double_Free__malloc_free_long_64b_goodG2BSink((void *)&data);
 }
 
@@ -59,13 +56,10 @@ void CWE415_Double_Free__malloc_free_long_64b_goodB2GSink(void * dataVoidPtr);
 
 static void goodB2G()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
-    data = (long *)malloc(100*sizeof(long));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
+    data = CWE415_Double_Free_sigriscv_long_goodB2GSource();
     CWE415_Double_Free__malloc_free_long_64b_goodB2GSink((void *)&data);
 }
 

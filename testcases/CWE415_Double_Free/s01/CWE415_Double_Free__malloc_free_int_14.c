@@ -19,24 +19,22 @@ Template File: sources-sinks-14.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_int_helpers.h"
+
 #ifndef OMITBAD
 
 void CWE415_Double_Free__malloc_free_int_14_bad()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     if(globalFive==5)
     {
-        data = (int *)malloc(100*sizeof(int));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int_badSource();
     }
     if(globalFive==5)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int_badSink(data);
     }
 }
 
@@ -47,15 +45,12 @@ void CWE415_Double_Free__malloc_free_int_14_bad()
 /* goodB2G1() - use badsource and goodsink by changing the second globalFive==5 to globalFive!=5 */
 static void goodB2G1()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     if(globalFive==5)
     {
-        data = (int *)malloc(100*sizeof(int));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int_goodB2GSource();
     }
     if(globalFive!=5)
     {
@@ -73,15 +68,12 @@ static void goodB2G1()
 /* goodB2G2() - use badsource and goodsink by reversing the blocks in the second if */
 static void goodB2G2()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     if(globalFive==5)
     {
-        data = (int *)malloc(100*sizeof(int));
-        if (data == NULL) {exit(-1);}
-        /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-        free(data);
+        data = CWE415_Double_Free_sigriscv_int_goodB2GSource();
     }
     if(globalFive==5)
     {
@@ -94,7 +86,7 @@ static void goodB2G2()
 /* goodG2B1() - use goodsource and badsink by changing the first globalFive==5 to globalFive!=5 */
 static void goodG2B1()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     if(globalFive!=5)
@@ -104,33 +96,27 @@ static void goodG2B1()
     }
     else
     {
-        data = (int *)malloc(100*sizeof(int));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int_goodG2BSource();
     }
     if(globalFive==5)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int_goodG2BSink(data);
     }
 }
 
 /* goodG2B2() - use goodsource and badsink by reversing the blocks in the first if */
 static void goodG2B2()
 {
-    int * data;
+    int ** data;
     /* Initialize data */
     data = NULL;
     if(globalFive==5)
     {
-        data = (int *)malloc(100*sizeof(int));
-        if (data == NULL) {exit(-1);}
-        /* FIX: Do NOT free data in the source - the bad sink frees data */
+        data = CWE415_Double_Free_sigriscv_int_goodG2BSource();
     }
     if(globalFive==5)
     {
-        /* POTENTIAL FLAW: Possibly freeing memory twice */
-        free(data);
+        CWE415_Double_Free_sigriscv_int_goodG2BSink(data);
     }
 }
 

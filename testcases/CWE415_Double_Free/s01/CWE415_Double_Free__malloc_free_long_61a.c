@@ -19,19 +19,20 @@ Template File: sources-sinks-61a.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_long_helpers.h"
+
 #ifndef OMITBAD
 
 /* bad function declaration */
-long * CWE415_Double_Free__malloc_free_long_61b_badSource(long * data);
+long ** CWE415_Double_Free__malloc_free_long_61b_badSource(long ** data);
 
 void CWE415_Double_Free__malloc_free_long_61_bad()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     data = CWE415_Double_Free__malloc_free_long_61b_badSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_long_badSink(data);
 }
 
 #endif /* OMITBAD */
@@ -39,24 +40,23 @@ void CWE415_Double_Free__malloc_free_long_61_bad()
 #ifndef OMITGOOD
 
 /* goodG2B uses the GoodSource with the BadSink */
-long * CWE415_Double_Free__malloc_free_long_61b_goodG2BSource(long * data);
+long ** CWE415_Double_Free__malloc_free_long_61b_goodG2BSource(long ** data);
 
 static void goodG2B()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     data = CWE415_Double_Free__malloc_free_long_61b_goodG2BSource(data);
-    /* POTENTIAL FLAW: Possibly freeing memory twice */
-    free(data);
+    CWE415_Double_Free_sigriscv_long_goodG2BSink(data);
 }
 
 /* goodB2G uses the BadSource with the GoodSink */
-long * CWE415_Double_Free__malloc_free_long_61b_goodB2GSource(long * data);
+long ** CWE415_Double_Free__malloc_free_long_61b_goodB2GSource(long ** data);
 
 static void goodB2G()
 {
-    long * data;
+    long ** data;
     /* Initialize data */
     data = NULL;
     data = CWE415_Double_Free__malloc_free_long_61b_goodB2GSource(data);

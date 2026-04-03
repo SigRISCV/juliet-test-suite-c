@@ -19,15 +19,14 @@ Template File: sources-sinks-61b.tmpl.c
 
 #include <wchar.h>
 
+#include "CWE415_Double_Free__sigriscv_char_helpers.h"
+
 #ifndef OMITBAD
 
-char * CWE415_Double_Free__malloc_free_char_61b_badSource(char * data)
+char ** CWE415_Double_Free__malloc_free_char_61b_badSource(char ** data)
 {
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_char_badSource();
 }
 
 #endif /* OMITBAD */
@@ -35,22 +34,17 @@ char * CWE415_Double_Free__malloc_free_char_61b_badSource(char * data)
 #ifndef OMITGOOD
 
 /* goodG2B() uses the GoodSource with the BadSink */
-char * CWE415_Double_Free__malloc_free_char_61b_goodG2BSource(char * data)
+char ** CWE415_Double_Free__malloc_free_char_61b_goodG2BSource(char ** data)
 {
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* FIX: Do NOT free data in the source - the bad sink frees data */
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_char_goodG2BSource();
 }
 
 /* goodB2G() uses the BadSource with the GoodSink */
-char * CWE415_Double_Free__malloc_free_char_61b_goodB2GSource(char * data)
+char ** CWE415_Double_Free__malloc_free_char_61b_goodB2GSource(char ** data)
 {
-    data = (char *)malloc(100*sizeof(char));
-    if (data == NULL) {exit(-1);}
-    /* POTENTIAL FLAW: Free data in the source - the bad sink frees data as well */
-    free(data);
-    return data;
+    (void)data;
+    return CWE415_Double_Free_sigriscv_char_goodB2GSource();
 }
 
 #endif /* OMITGOOD */
