@@ -33,7 +33,7 @@ static wchar_t * badSource(wchar_t * data)
     {
         /* Read input from a file */
         size_t dataLen = wcslen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {
@@ -83,7 +83,7 @@ static wchar_t * goodB2GSource(wchar_t * data)
     {
         /* Read input from a file */
         size_t dataLen = wcslen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {

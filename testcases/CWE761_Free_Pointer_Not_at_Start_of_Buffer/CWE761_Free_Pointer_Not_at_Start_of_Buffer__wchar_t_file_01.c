@@ -37,7 +37,7 @@ void CWE761_Free_Pointer_Not_at_Start_of_Buffer__wchar_t_file_01_bad()
     {
         /* Read input from a file */
         size_t dataLen = wcslen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {
@@ -82,7 +82,7 @@ static void goodB2G()
     {
         /* Read input from a file */
         size_t dataLen = wcslen(data);
-        FILE * pFile;
+        __raw FILE * pFile;
         /* if there is room in data, attempt to read the input from a file */
         if (100-dataLen > 1)
         {

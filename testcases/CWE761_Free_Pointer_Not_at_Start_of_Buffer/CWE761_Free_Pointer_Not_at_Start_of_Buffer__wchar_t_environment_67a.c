@@ -18,12 +18,30 @@ Template File: source-sinks-67a.tmpl.c
 
 #include <wchar.h>
 
-#define ENV_VARIABLE L"ADD"
-
 #ifdef _WIN32
+#define ENV_VARIABLE L"ADD"
 #define GETENV _wgetenv
 #else
-#define GETENV getenv
+#define ENV_VARIABLE "ADD"
+static wchar_t *sigriscv_wchar_getenv(__raw const char *name)
+{
+    static wchar_t envBuffer[100];
+    __raw char *environment = getenv(name);
+    if (environment == NULL)
+    {
+        return NULL;
+    }
+    if (mbstowcs(envBuffer, environment, 99) == (size_t)-1)
+    {
+        envBuffer[0] = (wchar_t)0;
+    }
+    else
+    {
+        envBuffer[99] = (wchar_t)0;
+    }
+    return envBuffer;
+}
+#define GETENV sigriscv_wchar_getenv
 #endif
 
 #define SEARCH_CHAR L'S'
